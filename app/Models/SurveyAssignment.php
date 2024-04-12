@@ -11,19 +11,20 @@ class SurveyAssignment extends Model
 
     protected $fillable = [
         'survey_id',
-        'user_id',
+        'role_id',
         'assigned_at',
-        'completed_at',
     ];
 
+    // Relación con la tabla de encuestas
     public function survey()
     {
         return $this->belongsTo(Survey::class);
     }
 
-    public function user()
+    // Relación con la tabla de roles
+    public function role()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Role::class);
     }
 }
 

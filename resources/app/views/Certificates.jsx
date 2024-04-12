@@ -1,42 +1,42 @@
-
-
-import CertificatesCard from "../components/CertificatesCard"
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import useSurvey from "../hooks/useSurvey";
 import useSWR from "swr";
 import clienteAxios from "../config/axios";
 import Loader from "../components/Loader";
-
+import SurveyCertificate from "../components/SurveyCertificate";
 
 const Certificates = () => {
+
+  const { deleteSurvey, userSurvey, roles } = useSurvey();
+
   const navigate = useNavigate();
-  const {userSurvey} = useSurvey()
-  
 
   const token = localStorage.getItem("AUTH_TOKEN");
 
   const fetcher = () =>
-    clienteAxios(`/api/certificates/user/${userSurvey.id}`, {
+    clienteAxios("/api/surveys/certificates", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }).then((data) => data.data);
 
-  const { data, error, isLoading } = useSWR(`/api/certificates/user/${userSurvey.id}`, fetcher, {
+  const { data, error, isLoading } = useSWR("/api/surveys/certificates", fetcher, {
     refreshInterval: 1000,
   });
+
+
+  console.log(data)
 
   return (
     <>
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
-          <div className="flex flex-wrap md:justify-start  justify-center p-2 ">
-            {data.certificates.map((certificate, index) => (
-              <CertificatesCard key={index} data={certificate} />
-            ))}
-          </div>
+        <div className="mx-auto bg-slate-50 dark:bg-gray-900  min-h-screen max-w-screen-xl md:py-6">
+          <SurveyCertificate
+            surveys={data}
+          />
         </div>
       )}
     </>

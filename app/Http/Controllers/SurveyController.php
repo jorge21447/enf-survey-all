@@ -8,6 +8,7 @@ use App\Models\Option;
 use App\Models\Survey;
 use App\Models\Section;
 use App\Models\Question;
+use App\Models\SurveyAssignment;
 use Illuminate\Http\Request;
 use App\Models\SurveyResponse;
 use Illuminate\Support\Facades\DB;
@@ -20,21 +21,45 @@ class SurveyController extends Controller
      */
     public function index()
     {
-        return "Hello world";
+    }
+
+    public function surveyCertificatesAll()
+    {
+        $user = Auth::user();
+        if ($user->role_id == '1' || $user->role_id == '2') {
+            $survey = Survey::with('sections.questions.options', 'user', 'responses')
+                ->where('has_certificate', '1')
+                ->orderBy('creation_date', 'desc')->get();
+            return response()->json($survey);
+        }
+        return response()->json(['error' => 'No tienes permiso para acceder a esta información'], 403);
     }
 
     public function surveyAll()
     {
         $user = Auth::user();
-        if ($user->role_id == '1') {
+        if ($user->role_id == '1' || $user->role_id == '2') {
             $survey = Survey::with('sections.questions.options', 'user', 'responses')->orderBy('creation_date', 'desc')->get();
             return response()->json($survey);
         }
+        if ($user->role_id == '3' || $user->role_id == '4') {
+            // Si el usuario es administrador (role_id = 1) o docente (role_id = 3)
+            $openSurveys = Survey::with('sections.questions.options', 'user', 'responses')
+                ->where('typeSurvey', 'open')
+                ->orderBy('creation_date', 'desc')
+                ->get();
 
-        //Poner logica de usuarios aqui 
-        $survey = Survey::with('sections.questions.options', 'user', 'responses')->orderBy('creation_date', 'desc')->get();
-        return response()->json($survey);
+            $closedSurveys = Survey::with('sections.questions.options', 'user', 'responses')
+                ->where('typeSurvey', 'closed')
+                ->whereHas('assignments', function ($query) use ($user) {
+                    $query->where('role_id', $user->role_id);
+                })
+                ->orderBy('creation_date', 'desc')
+                ->get();
 
+            $surveys = $openSurveys->merge($closedSurveys);
+            return response()->json($surveys);
+        }
 
         return response()->json(['error' => 'No tienes permiso para acceder a esta información'], 403);
     }
@@ -57,7 +82,7 @@ class SurveyController extends Controller
                 'title' => $data['title'],
                 'description' => $data['description'] ?? null,
                 'creation_date' => Carbon::now(),
-                'finish_date' => isset($data['finish_date']) ? Carbon::parse($data['finish_date']) : null,
+                'finish_date' => isset($data['finish_date']) ? $data['finish_date'] : null,
                 'style_survey' => $data['style_survey'] ?? null,
                 'typeSurvey' => $data['typeSurvey'],
                 'has_certificate' => $data['has_certificate'],
@@ -93,6 +118,16 @@ class SurveyController extends Controller
                 }
             }
 
+            // Si la encuesta es de tipo 'closed', asignar roles automáticamente
+            if ($survey->typeSurvey === 'closed' && $request->filled('assigned_roles')) {
+                $roleId = $request->assigned_roles;
+
+                SurveyAssignment::create([
+                    'survey_id' => $survey->id,
+                    'role_id' => $roleId,
+                    'assigned_at' => Carbon::now(),
+                ]);
+            }
 
 
             DB::commit();
@@ -137,6 +172,8 @@ class SurveyController extends Controller
             'style_survey' => $survey->style_survey,
             'has_certificate' => $survey->has_certificate,
             'questions' => [],
+            'assigned_roles' => $survey->typeSurvey === 'closed' ? $survey->assignments->pluck('name') : null, // Agregar roles asignados solo si la encuesta es de tipo "closed"
+            'comments' => $survey->comments->pluck('content')->toArray(),
         ];
 
         foreach ($survey->sections as $section) {
@@ -209,6 +246,7 @@ class SurveyController extends Controller
             'style_survey' => $survey->style_survey,
             'has_certificate' => $survey->has_certificate,
             'questions' => [],
+            'assigned_roles' => $survey->typeSurvey === 'closed' ? $survey->assignments->pluck('role_id') : null // Agregar roles asignados solo si la encuesta es de tipo "closed"
         ];
 
         foreach ($survey->sections as $section) {
@@ -269,7 +307,6 @@ class SurveyController extends Controller
                 } else {
                     $question = null;
                 }
-
                 // Si la pregunta no existe, crear una nueva
                 if (!$question) {
                     $question = $section->questions()->create([
@@ -303,7 +340,19 @@ class SurveyController extends Controller
                     }
                 }
             }
+            // Verifica si es una encuesta "closed" y se proporcionó un role_id
+            if ($survey->typeSurvey === 'closed' && $request->has('assigned_roles')) {
+                $roleId = $request->input('assigned_roles');
 
+                // Actualiza o crea la asignación de rol para la encuesta
+                $surveyRole = SurveyAssignment::updateOrCreate(
+                    ['survey_id' => $survey->id],
+                    ['role_id' => $roleId]
+                );
+
+                // Elimina las asignaciones de roles que no coinciden con el role_id proporcionado
+                $survey->assignments()->where('role_id', '!=', $roleId)->delete();
+            }
             // Obtener las IDs de las preguntas del JSON de datos
             // $questionIds = collect($request->input('questions'))->pluck('id')->toArray();
             // $filteredQuestionIds = array_filter($questionIds, function ($id) {
@@ -341,5 +390,68 @@ class SurveyController extends Controller
 
         // Retornar una respuesta de éxito
         return response()->json(['message' => 'Encuesta eliminada con éxito']);
+    }
+
+
+
+    public function checkSurveyResponses(string $id)
+    {
+        // Obtener el ID de la encuesta del request
+        $surveyId = $id;
+        // Verificar si la encuesta tiene el typeSurvey como 'closed'
+        $survey = Survey::find($surveyId);
+        if ($survey && $survey->typeSurvey == 'closed') {
+            // Buscar los SurveyAssignment para esta encuesta
+            $surveyAssignments = SurveyAssignment::where('survey_id', $surveyId)->get();
+
+            // Inicializar un array para almacenar la información de los usuarios y sus respuestas
+            $usersWithResponses = [];
+
+            // Recorrer los SurveyAssignment
+            foreach ($surveyAssignments as $assignment) {
+                // Obtener el ID del rol asignado
+                $roleId = $assignment->role_id;
+
+                // Buscar los usuarios con el rol designado
+                $users = User::where('role_id', $roleId)->get();
+
+                // Recorrer los usuarios y verificar si tienen respuestas en la encuesta
+                foreach ($users as $user) {
+                    // Verificar si el usuario tiene alguna respuesta en la encuesta
+                    $hasResponse = SurveyResponse::where('survey_id', $surveyId)
+                        ->where('user_id', $user->id)
+                        ->exists();
+
+                    // Agregar la información del usuario al array
+                    $usersWithResponses[] = [
+                        'name' =>  $user->name,
+                        'user_id' => $user->id,
+                        'role_id' => $roleId,
+                        'has_response' => $hasResponse
+                    ];
+                }
+            }
+
+            // Retornar la información de los usuarios con respuestas
+            return response()->json($usersWithResponses);
+        } elseif ($survey && $survey->typeSurvey == 'open') {
+            // En caso de que la encuesta sea 'open', retornar la información de los usuarios sin verificar respuestas
+            // Esto se hace asumiendo que no hay restricciones de acceso basadas en roles para encuestas 'open'
+            $allUsers = User::all();
+            $usersInfo = $allUsers->map(function ($user) use ($surveyId) {
+                $hasResponse = SurveyResponse::where('survey_id', $surveyId)
+                    ->where('user_id', $user->id)
+                    ->exists();
+                return [
+                    'user_id' => $user->id,
+                    'role_id' => $user->role_id,
+                    'has_response' => $hasResponse
+                ];
+            });
+            return response()->json($usersInfo);
+        } else {
+            // Si no se encuentra la encuesta, retornar un mensaje de error
+            return response()->json(['error' => 'Encuesta no encontrada'], 404);
+        }
     }
 }

@@ -32,45 +32,41 @@ const AdminLayout = () => {
 
     Modal.setAppElement("#root");
 
-    return (
-        <>
-            {userSurvey &&
-            userSurvey.role &&
-            userSurvey.role.name === "Administrador" ? (
-                <>
-                    <div className="dark:bg-boxdark-2 dark:text-bodydark">
-                        <div className="flex h-screen overflow-hidden">
-                            <SidebarAdmin
+    if (userSurvey?.role?.name === "Administrador") {
+        return (
+            <>
+                <div className="dark:bg-boxdark-2 dark:text-bodydark">
+                    <div className="flex h-screen overflow-hidden">
+                        <SidebarAdmin
+                            sidebarOpen={sidebarOpen}
+                            setSidebarOpen={setSidebarOpen}
+                        />
+
+                        <div className="relative flex flex-1 min-h-screen dark:bg-gray-900  flex-col overflow-y-auto overflow-x-hidden">
+                            <Header
                                 sidebarOpen={sidebarOpen}
                                 setSidebarOpen={setSidebarOpen}
                             />
 
-                            <div className="relative flex flex-1 min-h-screen dark:bg-gray-900  flex-col overflow-y-auto overflow-x-hidden">
-                                <Header
-                                    sidebarOpen={sidebarOpen}
-                                    setSidebarOpen={setSidebarOpen}
-                                />
-
-                                <main className="bg-gray-50 h-screen   dark:bg-gray-900">
-                                    <div className="mx-auto min-h-screen">
-                                        <Outlet />
-                                    </div>
-                                </main>
-                            </div>
+                            <main className="bg-gray-50 h-screen   dark:bg-gray-900">
+                                <div className="mx-auto min-h-screen">
+                                    <Outlet />
+                                </div>
+                            </main>
                         </div>
                     </div>
+                </div>
 
-                    <Modal isOpen={modalUser} style={customStyles}>
-                        <UserModal />
-                    </Modal>
+                <Modal isOpen={modalUser} style={customStyles}>
+                    <UserModal />
+                </Modal>
 
-                    <ToastContainer />
-                </>
-            ) : (
-                <NotAuthorized />
-            )}
-        </>
-    );
+                <ToastContainer />
+            </>
+        );
+    } else {
+        return <NotAuthorized />;
+    }
 };
 
 export default AdminLayout;

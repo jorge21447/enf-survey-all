@@ -1,4 +1,4 @@
-import SidebarAdmin from "../components/SidebarAdmin";
+import Sidebar from "../components/Sidebar";
 import { useState } from "react";
 import Header from "../components/Header/Index";
 import { Outlet } from "react-router-dom";
@@ -10,7 +10,7 @@ import useSurvey from "../hooks/useSurvey";
 import ModalTest from "../components/ModalTest";
 import NotAuthorized from "../views/NotAuthorized";
 
-const EncuestadorLayout = () => {
+const DocenteLayout = () => {
   const { userSurvey, modalUser, changeStateModalUser } = useSurvey();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -34,13 +34,11 @@ const EncuestadorLayout = () => {
 
   return (
     <>
-      {userSurvey &&
-      userSurvey.role &&
-      userSurvey.role.name === "Encuestador" ? (
+      {userSurvey && userSurvey.role && userSurvey.role.name === "Docente" ? (
         <>
           <div className="dark:bg-boxdark-2 dark:text-bodydark">
             <div className="flex h-screen overflow-hidden">
-              <SidebarAdmin
+              <Sidebar
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
               />
@@ -73,4 +71,4 @@ const EncuestadorLayout = () => {
   );
 };
 
-export default EncuestadorLayout;
+export default DocenteLayout;

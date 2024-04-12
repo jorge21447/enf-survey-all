@@ -26,6 +26,7 @@ class AuthController extends Controller
             ]);
             $token = $user->createToken('token')->plainTextToken;
             $user2 = User::with('role')->find($user->id);
+            $user2->photo_profile = $user->photo_profile? asset($user->photo_profile):'';
             return [
                 'token' => $token,
                 'user' => $user2,
@@ -51,7 +52,7 @@ class AuthController extends Controller
         //Autenticar al usuario
         $user = Auth::user();
         $user2 = User::with('role')->find($user->id);
-
+        $user2->photo_profile = $user->photo_profile? asset($user->photo_profile):'';
         $token = $user->createToken('token')->plainTextToken;
 
         return [

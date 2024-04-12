@@ -12,6 +12,7 @@ class Certificate extends Model
     protected $fillable = [
         'user_id',
         'survey_id',
+        'type',
     ];
 
     // Relación con el usuario

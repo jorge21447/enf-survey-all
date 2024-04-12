@@ -21,5 +21,8 @@ class Role extends Model
     {
         return $this->hasMany(User::class);
     }
-    
+    public function surveysAssignment()
+    {
+        return $this->hasMany(SurveyAssignment::class);
+    }
 }

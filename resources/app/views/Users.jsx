@@ -1,9 +1,7 @@
 import UserTable from "../components/UserTable";
-import { useNavigate } from "react-router-dom";
 import useSurvey from "../hooks/useSurvey";
 import useSWR from "swr";
 import clienteAxios from "../config/axios";
-import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 
 const Users = () => {

@@ -28,13 +28,13 @@ class RoleSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ),
             array(
-                'name' => 'Encuestador',
-                'description' => 'Este rol puede crear y responder encuestas del sistema.',
+                'name' => 'Docente',
+                'description' => 'Este rol puede responder encuestas del sistema.',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ),
             array(
-                'name' => 'Participante',
+                'name' => 'Estudiante',
                 'description' => 'Este rol puede responder encuestas del sistema.',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

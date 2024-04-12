@@ -1,4 +1,4 @@
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useSurvey from "../hooks/useSurvey";
 import { useState, useEffect } from "react";
 import Alerta from "../components/Alerta";
@@ -8,7 +8,7 @@ import clienteAxios from "../config/axios";
 import useSWR from "swr";
 
 const Settings = () => {
-  const {userSurvey, roles} = useSurvey()
+  const { userSurvey, roles } = useSurvey();
 
   const { editUser } = useSurvey();
   const navigate = useNavigate();
@@ -56,11 +56,10 @@ const Settings = () => {
     }
     formData.append("_method", "put");
 
-    const resultado = await editUser(formData, setErrores)
-    if(resultado){
-        navigate(`/${roles[userSurvey.role.name]}`);
+    const resultado = await editUser(formData, setErrores);
+    if (resultado) {
+      navigate(`/${roles[userSurvey.role.name]}`);
     }
-
   };
 
   const fetcher = () =>
@@ -81,7 +80,7 @@ const Settings = () => {
       setEmail(data.user.email);
       setRole_id(data.user.role_id);
       setDate_of_birth(data.user.date_of_birth || "");
-      setIs_active(data.user.is_active ? 1 : 0 );
+      setIs_active(data.user.is_active ? 1 : 0);
       //setPhoto_profile(data.user.photo_profile || '');
     }
   }, [isLoading, data]);
@@ -137,12 +136,13 @@ const Settings = () => {
                     id="role"
                     className="disabled:cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     value={role_id}
-                    disabled={userSurvey.role.name !== 'Administrador'}
+                    disabled={userSurvey.role.name !== "Administrador"}
                     onChange={(e) => setRole_id(e.target.value)}
                   >
                     <option value={1}>Administrador</option>
-                    <option value={2}>Encuestador</option>
-                    <option value={3}>Participante</option>
+                    <option value={2}>Administrativo</option>
+                    <option value={3}>Docente</option>
+                    <option value={4}>Estudiante</option>
                   </select>
                 </div>
                 <div>
@@ -191,7 +191,7 @@ const Settings = () => {
                     className="disabled:cursor-not-allowed bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     value={is_active}
                     onChange={(e) => setIs_active(e.target.value)}
-                    disabled={userSurvey.role.name !== 'Administrador'}
+                    disabled={userSurvey.role.name !== "Administrador"}
                   >
                     <option value={1}>Activo</option>
                     <option value={0}>No activo</option>
@@ -298,6 +298,4 @@ const Settings = () => {
   );
 };
 
-
-
-export default Settings
+export default Settings;

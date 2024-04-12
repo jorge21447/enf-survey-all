@@ -4,8 +4,7 @@ import Alerta from "../components/Alerta";
 import { useAuth } from "../hooks/useAuth";
 
 const Register = () => {
-  
-  const {register } = useAuth()
+  const { register } = useAuth();
 
   const [errores, setErrores] = useState([]);
 
@@ -13,13 +12,12 @@ const Register = () => {
   const emailRef = createRef();
   const passwordRef = createRef();
   const password_ConfirmationRef = createRef();
-  const [role_id, setRole_id] = useState(2);
+  const [role_id, setRole_id] = useState(3);
 
-
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setErrores([])
+    setErrores([]);
 
     const datos = {
       name: nameRef.current.value,
@@ -27,23 +25,24 @@ const Register = () => {
       password: passwordRef.current.value,
       password_confirmation: password_ConfirmationRef.current.value,
       role_id: role_id,
-    }
+    };
     register(datos, setErrores);
-
-
   };
 
   return (
     <>
       <div className="flex items-center justify-center my-auto  md:absolute md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2">
         <div className="min-h-screen flex items-center justify-center my-auto ">
-          <div className="md:max-w-[450px] w-full md:w-[450px]  p-14 bg-white
-           dark:bg-gray-700  rounded-3xl shadow-2xl  dark:shadow-2xl dark:shadow-slate-600">
+          <div
+            className="md:max-w-[450px] w-full md:w-[450px]  p-14 bg-white
+           dark:bg-gray-700  rounded-3xl shadow-2xl  dark:shadow-2xl dark:shadow-slate-600"
+          >
             <h2 className="text-3xl font-bold text-center my-4 font-mont mb-6">
               Registro
             </h2>
             <form noValidate onSubmit={handleSubmit}>
-              {errores? errores.map((error, i) => <Alerta key={i}>{error}</Alerta>)
+              {errores
+                ? errores.map((error, i) => <Alerta key={i}>{error}</Alerta>)
                 : null}
               <div className="mb-6 ">
                 <label
@@ -59,7 +58,6 @@ const Register = () => {
                   className="mt-1 p-2 w-full border rounded-md font-mont focus:outline-none focus:border-blue-500 focus:border-2"
                   placeholder="Juan Pedro Linares Molina"
                   ref={nameRef}
-                  
                 />
               </div>
               <div className="mb-6">
@@ -75,7 +73,6 @@ const Register = () => {
                   name="email"
                   className="mt-1 p-2 w-full border rounded-md font-mont focus:outline-none focus:border-blue-500 focus:border-2"
                   placeholder="TuCorreo@example.com"
-                  
                   ref={emailRef}
                 />
               </div>
@@ -95,6 +92,7 @@ const Register = () => {
                   ref={passwordRef}
                 />
               </div>
+
               <div className="mb-6">
                 <label
                   htmlFor="password_confirmation"
@@ -110,6 +108,23 @@ const Register = () => {
                   placeholder="Repite la contraseña"
                   ref={password_ConfirmationRef}
                 />
+              </div>
+              <div className="mb-6">
+                <label
+                  htmlFor="role"
+                  className="block mb-2 text-sm  font-mont font-semibold text-gray-900 dark:text-white"
+                >
+                  Rol
+                </label>
+                <select
+                  id="role"
+                  className="bg-gray-50 border font-mont border-gray-300 focus:border-blue-500 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                  value={role_id}
+                  onChange={(e) => setRole_id(e.target.value)}
+                >
+                  <option value={3}>Docente</option>
+                  <option value={4}>Estudiante</option>
+                </select>
               </div>
               <button
                 type="submit"

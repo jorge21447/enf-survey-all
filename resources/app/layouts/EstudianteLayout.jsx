@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import useSurvey from "../hooks/useSurvey";
 import NotAuthorized from "../views/NotAuthorized";
 
-const Layout = () => {
+const EstudianteLayout = () => {
   const { userSurvey, modalUser, changeStateModalUser } = useSurvey();
   
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -22,7 +22,7 @@ const Layout = () => {
     <>
       {userSurvey &&
       userSurvey.role &&
-      userSurvey.role.name === "Participante" ? (
+      userSurvey.role.name === "Estudiante" ? (
         <>
           <div className="dark:bg-boxdark-2 dark:text-bodydark">
             <div className="flex h-screen overflow-hidden">
@@ -55,4 +55,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default EstudianteLayout;

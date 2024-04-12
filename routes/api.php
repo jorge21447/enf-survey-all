@@ -8,6 +8,7 @@ use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\SurveyResponseController;
 use App\Http\Controllers\UserController;
+use App\Models\SurveyAssignment;
 use App\Models\SurveyResponse;
 
 /*
@@ -24,7 +25,9 @@ use App\Models\SurveyResponse;
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user', function (Request $request) {
-        return User::with('role')->find($request->user()->id);
+        $user = User::with('role')->find($request->user()->id);
+        $user->photo_profile = $user->photo_profile? asset($user->photo_profile):'';
+        return $user;
     });
 
     // Cerrar Sesion
@@ -37,20 +40,22 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/users', 'store');
         Route::put('/users/{id}', 'update');
         Route::delete('/users/{id}', 'destroy');
+        Route::get('/users/certificates/{id}', 'getUsersWithCertificates');
     });
 
     // Encuestas
     Route::controller(SurveyController::class)->group(function () {
-        Route::get('/surveys', 'index');
-        Route::get('/surveys/admin/', 'surveyAll');
-        Route::post('/surveys/new', 'store');
+        Route::get('/surveys/certificates', 'surveyCertificatesAll');
+        Route::get('/surveys/users', 'surveyAll');
         Route::get('/surveys/{id}', 'show');
         Route::get('/surveys/fill/{id}', 'getSurveyFill');
+        Route::post('/surveys/new', 'store');
         Route::post('/surveys/edit/{id}', 'update');
         Route::delete('/surveys/{id}', 'destroy');
+        
     });
 
-    // Resputas
+    // Respuestas
     Route::controller(SurveyResponseController::class)->group(function () {
         Route::post('/responses/new', 'create');
     });
@@ -62,6 +67,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/certificates/{id}', 'show');
     });
 
+    //Usuarios Asignaciones de Roles
+
+    Route::controller(SurveyAssignment::class)->group(function () {
+        Route::get('/surveyassignment/{id}', 'show');
+    });
 
 });
 
@@ -72,8 +82,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::controller(SurveyController::class)->group(function () {
     Route::get('/surveys', 'index');
+    Route::get('/surveyresponses/{id}', 'checkSurveyResponses');
 });
 
 
-
-// 

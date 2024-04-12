@@ -8,6 +8,11 @@ import QuestionConfiguration from "../components/QuestionConfiguration";
 import QuestionResponses from "../components/QuestionResponses";
 
 const SurveyCreator = () => {
+  const tabs = [
+    { content: "Diseñador" },
+    { content: "Configuración" },
+    { content: "Respuestas" },
+  ];
   const {
     questions,
     action,
@@ -20,6 +25,8 @@ const SurveyCreator = () => {
     onDragEnd,
     submitSurvey,
     editSurvey,
+    userSurvey,
+    roles,
   } = useSurvey();
 
   const [activeTab, setActiveTab] = useState(0);
@@ -27,15 +34,8 @@ const SurveyCreator = () => {
   const [dateFinish, setDateFinish] = useState("");
   const [style_survey, setStyle_survey] = useState(colorSS || "default");
   const [typeSurvey, setTypeSurvey] = useState("open");
-  const [usersAssignment, setUsersAssignment] = useState([]);
   const [has_certificate, setHas_certificate] = useState(0);
-
-  
-  const tabs = [
-    { content: "Diseñador" },
-    { content: "Configuración" },
-    { content: "Respuestas" },
-  ];
+  const [assigned_roles, setAssigned_roles] = useState("3");
 
   const handleTabClick = (index) => {
     setActiveTab(index);
@@ -46,7 +46,7 @@ const SurveyCreator = () => {
   const handleReturn = (e) => {
     e.preventDefault();
 
-    navigate("/admin/surveys/");
+    navigate(`/${roles[userSurvey.role.name]}/surveys`);
   };
 
   const handleSubmitSurvey = async (e) => {
@@ -56,12 +56,13 @@ const SurveyCreator = () => {
         ...formData,
         questions: [...questions],
         typeSurvey: typeSurvey,
-        style_survey: setStyle_survey,
+        style_survey: style_survey,
         finish_date: dateFinish,
-        has_certificate: has_certificate
+        has_certificate: has_certificate,
+        assigned_roles: assigned_roles,
       });
       if (resultado) {
-        navigate("/admin/surveys");
+        navigate(`/${roles[userSurvey.role.name]}/surveys`);
       }
     } else {
       const resultado = await editSurvey({
@@ -69,12 +70,10 @@ const SurveyCreator = () => {
         questions: [...questions],
       });
       if (resultado) {
-        navigate("/admin/surveys");
+        navigate(`/${roles[userSurvey.role.name]}/surveys`);
       }
     }
   };
-
-  console.log(typeSurvey, style_survey, dateFinish, usersAssignment);
 
   return (
     <>
@@ -134,22 +133,23 @@ const SurveyCreator = () => {
         {activeTab === 1 && (
           <>
             <QuestionConfiguration
+              formData={formData}
               dateFinish={dateFinish}
               style_survey={style_survey}
               typeSurvey={typeSurvey}
               setDateFinish={setDateFinish}
               setStyle_survey={setStyle_survey}
               setTypeSurvey={setTypeSurvey}
-              usersAssignment={usersAssignment}
-              setUsersAssignment={setUsersAssignment}
               has_certificate={has_certificate}
               setHas_certificate={setHas_certificate}
+              assigned_roles={assigned_roles}
+              setAssigned_roles={setAssigned_roles}
             />
           </>
         )}
         {activeTab === 2 && (
           <>
-            <QuestionResponses createSurvey={createSurvey}/>
+            <QuestionResponses createSurvey={createSurvey} />
           </>
         )}
       </div>

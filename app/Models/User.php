@@ -63,13 +63,13 @@ class User extends Authenticatable
         return $this->hasMany(SurveyResponse::class);
     }
 
-    public function surveysAssignment()
-    {
-        return $this->hasMany(SurveyAssignment::class);
-    }
+    
     public function certificates()
     {
         return $this->hasMany(Certificate::class);
     }
-
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

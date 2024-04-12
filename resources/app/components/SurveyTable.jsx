@@ -5,8 +5,10 @@ import { MdAdd } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
 import { IoShareSocial } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import useSurvey from "../hooks/useSurvey";
 
 const SurveyTable = ({ surveys, handleCreateSurvey, handleDelete }) => {
+  const {userSurvey} = useSurvey()
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
@@ -151,6 +153,7 @@ const SurveyTable = ({ surveys, handleCreateSurvey, handleDelete }) => {
                               <FiEdit />
                               {/* Editar */}
                             </button>
+                            {userSurvey?.role?.name == 'Administrador'? (
                             <button
                               type="button"
                               className="gap-1 flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
@@ -158,7 +161,7 @@ const SurveyTable = ({ surveys, handleCreateSurvey, handleDelete }) => {
                             >
                               <RiDeleteBin6Fill />
                               {/* Eliminar */}
-                            </button>
+                            </button>):('')}
                           </div>
                         </td>
                       </tr>

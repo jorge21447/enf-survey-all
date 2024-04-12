@@ -8,7 +8,7 @@ import RadioInput from "./RadioInput";
 import RatingInput from "./RatingInput";
 import CheckboxInput from "./CheckboxInput";
 import BooleanInput from "./BooleanInput";
-import useAuth from "../../hooks/useAuth";
+import useSurvey from "../../hooks/useSurvey";
 
 const Question = ({
   action,
@@ -20,16 +20,16 @@ const Question = ({
   onChanges,
   expanded = false,
 }) => {
-
-  const { user } = useAuth({middleware: 'auth'});
+  const { userSurvey } = useSurvey();
 
   const textareaRef = useRef(null);
   const { background, text, border } = colors[colorSS];
   const [isInputFocused, setIsInputFocused] = useState(false);
 
-  const respondent = data.respondents.find((el) => el.user_id === user.id);
-  const responseValue = hasEditAccess ? "" : respondent?.response ?? '';
-
+  const respondent = data.respondents.find(
+    (el) => el.user_id === userSurvey.id
+  );
+  const responseValue = hasEditAccess ? "" : respondent?.response ?? "";
 
   useEffect(() => {
     textareaRef.current.style.height = "auto";
@@ -60,19 +60,23 @@ const Question = ({
     <div
       className={`${
         isInputFocused ? "ring-teal-300 ring-4 " : ""
-      } rounded-3xl border-l-[40px] bg-white  text-${text} px-6 pb-4 shadow ${border} shadow`}
+      } rounded-3xl border-l-[40px] bg-white  text-${text} px-6 pb-4 shadow ${border} shadow dark:bg-gray-500`}
     >
-      {hasEditAccess ? (<div className="pt-2 flex justify-center text-black">
-        <MdOutlineDragIndicator className="rotate-90 text-sm" />
-      </div>):("")}
-      
+      {hasEditAccess ? (
+        <div className="pt-2 flex justify-center text-black">
+          <MdOutlineDragIndicator className="rotate-90 text-sm" />
+        </div>
+      ) : (
+        ""
+      )}
+
       <div className="flex items-start  pt-2 pb-4" onClick={onChanges}>
         {/* Titulo de las questions  */}
         <span className="text-black text-lg  font-mont py-3 font-semibold">
           {currentIndex + 1}.{" "}
         </span>
         <textarea
-          className={`resize-none w-full h-auto disabled:hover:ring-0 hover:ring-1 font-semibold font-mont hover:ring-slate-300 py-3 text-lg outline-none  placeholder-slate-300 text-black   focus:outline-none focus:ring-teal-300 focus:ring-2  rounded-lg p-2`}
+          className={`resize-none w-full h-auto disabled:hover:ring-0 hover:ring-1 font-semibold font-mont hover:ring-slate-300 py-3 text-lg outline-none  placeholder-slate-300 text-black dark:text-gray-300  focus:outline-none focus:ring-teal-300 focus:ring-2  rounded-lg p-2`}
           ref={textareaRef}
           disabled={!hasEditAccess}
           name="title"

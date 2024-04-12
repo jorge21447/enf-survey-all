@@ -19,7 +19,7 @@ return new class extends Migration
             $table->dateTime('creation_date');
             $table->dateTime('finish_date')->nullable();
             $table->string('style_survey')->nullable();
-            $table->enum('typeSurvey', ['open', 'close']);
+            $table->enum('typeSurvey', ['open', 'closed']);
             $table->timestamps();
         });
     }

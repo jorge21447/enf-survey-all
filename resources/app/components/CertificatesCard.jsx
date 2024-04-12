@@ -44,8 +44,9 @@ const CertificatesCard = ({ data }) => {
                 `/${roles[userSurvey.role.name]}/certificates/${data.id}`
               );
             }}
+            disabled={true}
           >
-            Imprimir
+            Obtener en Direccion
           </button>
         </div>
       </div>

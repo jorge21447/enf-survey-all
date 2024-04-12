@@ -15,13 +15,13 @@ const Surveys = () => {
   const token = localStorage.getItem("AUTH_TOKEN");
 
   const fetcher = () =>
-    clienteAxios("/api/surveys/admin", {
+    clienteAxios("/api/surveys/users", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }).then((data) => data.data);
 
-  const { data, error, isLoading } = useSWR("/api/surveys/admin", fetcher, {
+  const { data, error, isLoading } = useSWR("/api/surveys/users", fetcher, {
     refreshInterval: 1000,
   });
 
@@ -32,7 +32,7 @@ const Surveys = () => {
 
   const handleCreateSurvey = (e) => {
     e.preventDefault();
-    navigate("/admin/surveys/create");
+    navigate(`/${roles[userSurvey.role.name]}/surveys/create`);
   };
 
   return (

@@ -2,18 +2,17 @@ import { useState } from "react";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { MdAdd } from "react-icons/md";
-import { RiFilterFill } from "react-icons/ri";
-import { IoIosArrowDown } from "react-icons/io";
 import { FiSearch } from "react-icons/fi";
 import { MdOutlineFileDownload } from "react-icons/md";
 import UserDefault from "../assets/userDefault.png";
 import useSurvey from "../hooks/useSurvey";
 import { useNavigate } from "react-router-dom";
+import { CSVLink } from "react-csv";
 
 const UserTable = ({ users, handleDelete }) => {
   const navigate = useNavigate();
 
-  const { changeStateModalUser } = useSurvey();
+  const { changeStateModalUser, userSurvey, roles } = useSurvey();
 
   const [search, setSearch] = useState("");
 
@@ -26,6 +25,18 @@ const UserTable = ({ users, handleDelete }) => {
     : users.filter((dato) =>
         dato.name.toLowerCase().includes(search.toLocaleLowerCase())
       );
+
+
+  const prepareUserDataForCSV = (userData) => {
+    return userData.map((user) => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      is_active: user.is_active,
+      role_id: user.role_id,
+      role_name: user.role.name,
+    }));
+  };
 
   return (
     <>
@@ -70,49 +81,24 @@ const UserTable = ({ users, handleDelete }) => {
                   <MdAdd size={18} />
                   Añadir Usuario
                 </button>
-                <button
-                  type="button"
+
+
+                <CSVLink
+                  data={prepareUserDataForCSV(results)}
+                  filename="user-data.csv"
+                  headers={[
+                    { label: "ID", key: "id" },
+                    { label: "Nombre", key: "name" },
+                    { label: "Correo electrónico", key: "email" },
+                    { label: "Estado", key: "is_active" },
+                    { label: "ID de rol", key: "role_id" },
+                    { label: "Rol", key: "role_name" },
+                  ]}
+                  separator=";"
                   className="gap-1 flex items-center justify-center text-gray-700 hover:text-white border border-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm px-3 py-2 text-center dark:border-gray-500 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700"
                 >
                   <MdOutlineFileDownload /> Descargar CSV
-                </button>
-                <div className="flex items-center space-x-3 w-full md:w-auto">
-                  <button
-                    className="gap-1 w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                    type="button"
-                  >
-                    <RiFilterFill />
-                    Filtrar
-                    <IoIosArrowDown />
-                  </button>
-                  <div
-                    id="filterDropdown"
-                    className="z-10 hidden w-56 p-3 bg-white rounded-lg shadow dark:bg-gray-700"
-                  >
-                    <h6 className="mb-3 text-sm font-medium text-gray-900 dark:text-white">
-                      Categoria
-                    </h6>
-                    <ul
-                      className="space-y-2 text-sm"
-                      aria-labelledby="filterDropdownButton"
-                    >
-                      <li className="flex items-center">
-                        <input
-                          id="name"
-                          type="checkbox"
-                          value=""
-                          className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                        />
-                        <label
-                          htmlFor="name"
-                          className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                        >
-                          Nombre
-                        </label>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+                </CSVLink>
               </div>
             </div>
             <div className="overflow-x-auto">
@@ -155,7 +141,7 @@ const UserTable = ({ users, handleDelete }) => {
                                   : UserDefault
                               }
                               alt="profile photo"
-                              className="h-8 w-auto mr-3"
+                              className="h-8 w-auto mr-3 rounded-full"
                             />
                             {user.name}
                           </div>
@@ -191,14 +177,18 @@ const UserTable = ({ users, handleDelete }) => {
                               <FiEdit />
                               Editar
                             </button>
-                            <button
-                              type="button"
-                              className="gap-1 flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                              onClick={() => handleDelete(user.name, user.id)}
-                            >
-                              <RiDeleteBin6Fill />
-                              Eliminar
-                            </button>
+                            {userSurvey?.role?.name == "Administrador" ? (
+                              <button
+                                type="button"
+                                className="gap-1 flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
+                                onClick={() => handleDelete(user.name, user.id)}
+                              >
+                                <RiDeleteBin6Fill />
+                                Eliminar
+                              </button>
+                            ) : (
+                              ""
+                            )}
                           </div>
                         </td>
                       </tr>

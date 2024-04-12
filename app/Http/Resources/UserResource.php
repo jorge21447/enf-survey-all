@@ -26,7 +26,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'email_verified_at' => $this->email_verified_at,
             'role_id' => $this->role_id,
-            'photo_profile' => $this->photo_profile,
+            'photo_profile' => $this->photo_profile? asset($this->photo_profile):'',
             'date_of_birth' => $this->date_of_birth,
             'is_active' => $this->is_active,
             'role'  => new RoleResource($this->whenLoaded('role')),

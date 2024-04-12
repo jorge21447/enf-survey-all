@@ -139,8 +139,9 @@ const UsersEdit = () => {
                     onChange={(e) => setRole_id(e.target.value)}
                   >
                     <option value={1}>Administrador</option>
-                    <option value={2}>Encuestador</option>
-                    <option value={3}>Participante</option>
+                    <option value={2}>Administrativo</option>
+                    <option value={3}>Docente</option>
+                    <option value={4}>Estudiante</option>
                   </select>
                 </div>
                 <div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Survey;
+use App\Models\Comment;
 use App\Models\Question;
 use App\Models\Certificate;
 use Illuminate\Http\Request;
@@ -13,16 +14,11 @@ use Illuminate\Support\Facades\Auth;
 
 class SurveyResponseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Request $request)
     {
 
@@ -36,9 +32,12 @@ class SurveyResponseController extends Controller
                 'questions' => 'required|array',
                 'questions.*.id' => 'required|integer',
                 'questions.*.respondents' => 'required|array',
-                'has_certificate' => 'required|integer'
+                'has_certificate' => 'required|integer',
+                'assigned_roles' => 'nullable',
+                'comment' => 'required|string',
             ]);
 
+            $user = Auth::user();
             // Recorre las preguntas y respuestas del JSON y almacena cada respuesta en la tabla survey_responses
             foreach ($validatedData['questions'] as $question) {
                 foreach ($question['respondents'] as $respondent) {
@@ -50,12 +49,19 @@ class SurveyResponseController extends Controller
                     $surveyResponse->save();
                 }
             }
-
+            // Guardar comentario
+            $comment = new Comment();
+            $comment->survey_id = $validatedData['id'];
+            $comment->user_id = $user->id;
+            $comment->content = $validatedData['comment'];
+            $comment->save();
 
 
             if ($validatedData['has_certificate'] == 1) {
-                $user = Auth::user();
+
                 $surveyId = $validatedData['id'];
+                $roleID = $user->role_id;
+                $assignedRoles = $validatedData['assigned_roles'] ?? null;
                 // Verificar si todas las preguntas de la encuesta han sido respondidas por el usuario
                 // $survey = Survey::findOrFail($surveyId);
                 // $allQuestionsAnswered = $survey->questions()->whereNotIn('id', SurveyResponse::where('user_id', $user->id)->pluck('question_id'))->count() == 0;
@@ -69,6 +75,7 @@ class SurveyResponseController extends Controller
                     $certificate = new Certificate();
                     $certificate->user_id = $user->id;
                     $certificate->survey_id = $surveyId;
+                    $certificate->type = $assignedRoles ?? 'all';
                     $certificate->save();
                 }
             }
@@ -87,7 +94,7 @@ class SurveyResponseController extends Controller
         }
     }
 
-    
+
     /**
      * Store a newly created resource in storage.
      */
@@ -101,7 +108,6 @@ class SurveyResponseController extends Controller
      */
     public function show(SurveyResponse $surveyResponse)
     {
-        
     }
 
     /**

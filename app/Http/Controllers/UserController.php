@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Survey;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Support\Facades\Hash;
 use function Laravel\Prompts\confirm;
 use App\Http\Resources\UserCollection;
 use Illuminate\Support\Facades\Storage;
@@ -60,7 +61,7 @@ class UserController extends Controller
 
             $data = $request->all();
 
-            
+
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -76,7 +77,7 @@ class UserController extends Controller
                 $file = $request->file('photo_profile');
                 $nameProfile = $file->hashName(); // Generate a unique, random name...
                 $extension = $file->extension();
-                $photoProfilePath = "public/images/profiles/$nameProfile"; // Customized path
+                $photoProfilePath = "storage/images/profiles/$nameProfile"; // Customized path
                 $file->storeAs('public/images/profiles', "$nameProfile");
                 $user->photo_profile = $photoProfilePath;
             };
@@ -115,7 +116,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        
+
         $user = User::find($id);
         if (!$user) {
             return response([
@@ -155,7 +156,7 @@ class UserController extends Controller
             $user->email = $request->email;
             $user->role_id = $request->role_id;
 
-            
+
             // Verificar si 'is_active' está presente en la solicitud
 
             $user->date_of_birth = $request->date_of_birth ?? null;
@@ -174,7 +175,7 @@ class UserController extends Controller
                 $file = $request->file('photo_profile');
                 $nameProfile = $file->hashName(); // Generate a unique, random name...
                 $extension = $file->extension();
-                $photoProfilePath = "public/images/profiles/$nameProfile"; // Customized path
+                $photoProfilePath = "storage/images/profiles/$nameProfile"; // Customized path
                 $file->storeAs('public/images/profiles', "$nameProfile");
                 $user->photo_profile = $photoProfilePath;
             };
@@ -219,5 +220,26 @@ class UserController extends Controller
         return response([
             'message' =>  ['Usuario eliminado correctamente']
         ], 200);
+    }
+
+    public function getUsersWithCertificates(string $surveyId)
+    {
+        $survey = Survey::find($surveyId);
+        if (!$survey) {
+            return response([
+                'message' => ['Datos no encontrados']
+            ], 404);
+        }
+
+        $users = User::whereHas('certificates', function ($query) use ($surveyId) {
+            $query->where('survey_id', $surveyId);
+        })
+            ->with(['role', 'certificates' => function ($query) use ($surveyId) {
+                $query->where('survey_id', $surveyId);
+            }, 'certificates.survey' => function ($query) use ($surveyId) {
+                $query->where('id', $surveyId);
+            }])
+            ->get();
+        return $users;
     }
 }

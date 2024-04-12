@@ -15,11 +15,9 @@ import { FaSave } from "react-icons/fa";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 import QuestionConfiguration from "../components/QuestionConfiguration";
 import QuestionResponses from "../components/QuestionResponses";
-import {convertirFecha} from "../utils/util"
+import { convertirFecha } from "../utils/util";
 
 const SurveyEditor = () => {
-
-    
   const tabs = [
     { content: "Diseñador" },
     { content: "Configuración" },
@@ -39,17 +37,25 @@ const SurveyEditor = () => {
     submitSurvey,
     getSurveyID,
     editSurvey,
+    userSurvey,
+    roles,
   } = useSurvey();
 
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(0);
   const [createSurvey, setCreateSurvey] = useState(false);
- 
-  const [dateFinish, setDateFinish] = useState( formData?.finish_date ? new Date(formData?.finish_date).toISOString().slice(0, 10) : "");
+
+  const [dateFinish, setDateFinish] = useState(
+    formData?.finish_date
+      ? new Date(formData?.finish_date).toISOString().slice(0, 10)
+      : ""
+  );
   const [style_survey, setStyle_survey] = useState(colorSS || "default");
   const [typeSurvey, setTypeSurvey] = useState("open");
-  const [usersAssignment, setUsersAssignment] = useState([]);
+  const [has_certificate, setHas_certificate] = useState(0);
+  const [assigned_roles, setAssigned_roles] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,7 +68,6 @@ const SurveyEditor = () => {
     };
     surveyID(id);
   }, [id]);
-
 
   const handleTabClick = (index) => {
     setActiveTab(index);
@@ -80,11 +85,11 @@ const SurveyEditor = () => {
       const resultado = await submitSurvey({
         ...formData,
         questions: [...questions],
-        typeSurvey: "open",
+        typeSurvey: typeSurvey,
         style_survey: colorSS,
       });
       if (resultado) {
-        navigate("/admin/surveys");
+        navigate(`/${roles[userSurvey.role.name]}/surveys`);
       }
     } else {
       const resultado = await editSurvey({
@@ -92,22 +97,20 @@ const SurveyEditor = () => {
         questions: [...questions],
       });
       if (resultado) {
-        navigate("/admin/surveys");
+        navigate(`/${roles[userSurvey.role.name]}/surveys`);
       }
     }
   };
 
   return (
     <>
-      <div className="flex items-center justify-between flex-col md:flex-row  h-full mx-auto w-full md:w-5/6 bg-slate-50  rounded-2xl ">
+      <div className="flex items-center justify-between flex-col md:flex-row  h-full mx-auto w-full md:w-5/6 dark:bg-slate-800 bg-slate-50  rounded-2xl ">
         <ul className=" flex flex-col md:flex-row justify-between  bg-gray-200 dark:bg-gray-800 rounded-2xl shadow">
           {tabs.map((tab, index) => (
             <li
               key={index}
               className={` z-20 p-3 flex  items-center justify-center rounded-xl h-10 w-screen md:w-40 cursor-pointer ${
-                index === activeTab
-                  ? "bg-teal-500 text-white"
-                  : "text-gray-500"
+                index === activeTab ? "bg-teal-500 text-white" : "text-gray-500"
               }`}
               onClick={() => handleTabClick(index)}
             >
@@ -158,27 +161,31 @@ const SurveyEditor = () => {
             )}
           </>
         )}
-        
+
         {activeTab === 1 && (
           <>
-          <QuestionConfiguration
-            dateFinish={dateFinish}
-            style_survey={style_survey}
-            typeSurvey={typeSurvey}
-            setDateFinish={setDateFinish}
-            setStyle_survey={setStyle_survey}
-            setTypeSurvey={setTypeSurvey}
-            usersAssignment={usersAssignment}
-            setUsersAssignment={setUsersAssignment}
-          />
-        </>
+            <QuestionConfiguration
+              formData={formData}
+              dateFinish={dateFinish}
+              style_survey={style_survey}
+              typeSurvey={typeSurvey}
+              setDateFinish={setDateFinish}
+              setStyle_survey={setStyle_survey}
+              setTypeSurvey={setTypeSurvey}
+              has_certificate={has_certificate}
+              setHas_certificate={setHas_certificate}
+              assigned_roles={assigned_roles}
+              setAssigned_roles={setAssigned_roles}
+            />
+          </>
         )}
         {activeTab === 2 && (
           <>
-            <QuestionResponses 
-            createSurvey={createSurvey}
-            formData={formData}
-            questions={questions}/>
+            <QuestionResponses
+              createSurvey={createSurvey}
+              formData={formData}
+              questions={questions}
+            />
           </>
         )}
       </div>

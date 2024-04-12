@@ -8,7 +8,7 @@ import HeadForm from "./HeadForm";
 import Question from "./Question/Question";
 import AddQuestionField from "./Question/AddQuestionField";
 import { useNavigate } from "react-router-dom";
-
+import CommentInput from "./CommentInput";
 
 const QuestionsTab = ({
   formData,
@@ -23,41 +23,7 @@ const QuestionsTab = ({
   viewSurvey,
   editSurvey,
 }) => {
-
-  
-
   const navigate = useNavigate();
-
-  const handleReturn = (e) => {
-    e.preventDefault();
-
-    navigate("/admin/surveys/");
-  };
-
-  const handleSubmitSurvey = async (e) => {
-    e.preventDefault();
-    if (viewSurvey) {
-      console.log(questions);
-      // const resultado = await submitSurvey({
-      //   ...formData,
-      //   questions: [...questions],
-      //   typeSurvey: "open",
-      //   style_survey: colorSS,
-      // });
-      // if (resultado) {
-      //   navigate("/admin/surveys");
-      // }
-    } else {
-      console.log(questions);
-      // const resultado = await editSurvey({
-      //   ...formData,
-      //   questions: [...questions],
-      // });
-      // if (resultado) {
-      //   navigate("/admin/surveys");
-      // }
-    }
-  };
 
   const questionsUI = () => {
     return questions.map((ques, i) =>
@@ -132,7 +98,10 @@ const QuestionsTab = ({
 
           <div className="pt-2">
             {viewSurvey ? (
-              <div className="mb-10">{questionsUI()}</div>
+              <>
+                <div className="mb-10">{questionsUI()}</div>
+                
+              </>
             ) : (
               <>
                 <DragDropContext onDragEnd={onDragEnd}>

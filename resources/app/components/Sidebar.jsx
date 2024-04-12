@@ -13,7 +13,6 @@ import { RiSurveyLine } from "react-icons/ri";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { AiOutlineSetting } from "react-icons/ai";
 import { TbReportMoney } from "react-icons/tb";
-import { TbUserCircle } from "react-icons/tb";
 import { PiCertificate } from "react-icons/pi";
 // Img
 import LogoIcon from "../assets/logo-enf.png";
@@ -45,10 +44,6 @@ const Sidebar = () => {
       );
       const usuarioJSON = informacionDesencriptada.toString(CryptoJS.enc.Utf8);
       setStoreUser(JSON.parse(usuarioJSON));
-      console.log(usuarioJSON)
-    }
-    else{
-        navigate('/404')
     }
   }, [])
   
@@ -110,11 +105,11 @@ const Sidebar = () => {
 
         <div className="flex flex-col  h-full">
           <ul className="whitespace-pre px-2.5 text-[0.9rem] py-5 flex flex-col gap-1  font-medium overflow-x-hidden   md:h-[68%] h-[70%]">
-            {storedUser && storedUser?.role?.name == "Encuestador" ? (
+            {storedUser && storedUser?.role?.name == "Docente" ? (
               <>
                 <li>
                   <NavLink
-                    to={"/encuestador"}
+                    to={"/teacher"}
                     end
                     className="p-2.5 theme1 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
                     style={({ isActive, isTransitioning }) => {
@@ -132,7 +127,7 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <NavLink
-                    to={"/encuestador/surveys"}
+                    to={"/teacher/surveys"}
                     className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
                     style={({ isActive, isTransitioning }) => {
                       return {
@@ -150,7 +145,7 @@ const Sidebar = () => {
 
                 <li>
                   <NavLink
-                    to={"/encuestador/surveysList"}
+                    to={"/teacher/surveysList"}
                     className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
                     style={({ isActive, isTransitioning }) => {
                       return {
@@ -168,7 +163,7 @@ const Sidebar = () => {
 
                 <li>
                   <NavLink
-                    to={"/encuestador/reports"}
+                    to={"/teacher/reports"}
                     className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
                     style={({ isActive, isTransitioning }) => {
                       return {
@@ -186,7 +181,7 @@ const Sidebar = () => {
 
                 <li>
                   <NavLink
-                    to={"/encuestador/settings"}
+                    to={"/teacher/settings"}
                     className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
                     style={({ isActive, isTransitioning }) => {
                       return {
@@ -205,11 +200,11 @@ const Sidebar = () => {
             ) : (
               ""
             )}
-            {storedUser && storedUser?.role?.name == "Participante" ? (
+            {storedUser && storedUser?.role?.name == "Estudiante" ? (
               <>
                 <li>
                   <NavLink
-                    to={"/user"}
+                    to={"/student"}
                     end
                     className="p-2.5 theme1 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
                     style={({ isActive, isTransitioning }) => {
@@ -227,7 +222,7 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <NavLink
-                    to={"/user/surveys"}
+                    to={"/student/surveysList"}
                     className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
                     style={({ isActive, isTransitioning }) => {
                       return {
@@ -245,7 +240,7 @@ const Sidebar = () => {
 
                 <li>
                   <NavLink
-                    to={"/user/reports"}
+                    to={"/student/reports"}
                     className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
                     style={({ isActive, isTransitioning }) => {
                       return {
@@ -263,7 +258,7 @@ const Sidebar = () => {
 
                 <li>
                   <NavLink
-                    to={"/user/certificates"}
+                    to={"/student/certificatesList"}
                     className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
                     style={({ isActive, isTransitioning }) => {
                       return {
@@ -280,7 +275,7 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <NavLink
-                    to={"/user/settings"}
+                    to={"/student/settings"}
                     className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
                     style={({ isActive, isTransitioning }) => {
                       return {

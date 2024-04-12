@@ -6,7 +6,7 @@ import useSurvey from "../hooks/useSurvey";
 
 const SurveyTableReports = ({surveys}) => {
 
-    const {roles, userSurvey} = useSurvey()
+  const {roles, userSurvey} = useSurvey()
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");

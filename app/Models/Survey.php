@@ -49,4 +49,8 @@ class Survey extends Model
     {
         return $this->hasMany(Certificate::class);
     }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

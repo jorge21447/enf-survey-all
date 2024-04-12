@@ -34,9 +34,9 @@ class SurveyAssignmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SurveyAssignment $surveyAssignment)
+    public function show($id)
     {
-        //
+        
     }
 
     /**

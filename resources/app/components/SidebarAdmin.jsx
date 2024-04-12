@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-
+import CryptoJS from "crypto-js";
 // React icons
 import { RiMenuLine } from "react-icons/ri";
 
@@ -15,11 +15,13 @@ import { TbReportMoney } from "react-icons/tb";
 import { TbUserCircle } from "react-icons/tb";
 // Img
 import LogoIcon from "../assets/logo-enf.png";
+import { PiCertificate } from "react-icons/pi";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
 
-  const {user, logout } = useAuth();
+  const { logout } = useAuth();
+  const [storedUser, setStoreUser] = useState({});
 
   const sidebarRef = useRef();
   const { pathname } = useLocation();
@@ -28,6 +30,16 @@ const Sidebar = () => {
     const isTabletMid = window.innerWidth <= 768;
     setOpen(isTabletMid ? false : true); // Adjust for smaller screens
   };
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      const informacionDesencriptada = CryptoJS.AES.decrypt(
+        localStorage.getItem("user"),
+        "@enf_survey"
+      );
+      const usuarioJSON = informacionDesencriptada.toString(CryptoJS.enc.Utf8);
+      setStoreUser(JSON.parse(usuarioJSON));
+    }
+  }, []);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
@@ -43,7 +55,6 @@ const Sidebar = () => {
       setOpen(false); // Close sidebar on route change in smaller screens
     }
   }, [pathname]);
-
 
   return (
     <div>
@@ -87,113 +98,230 @@ const Sidebar = () => {
 
         <div className="flex flex-col  h-full">
           <ul className="whitespace-pre px-2.5 text-[0.9rem] py-5 flex flex-col gap-1  font-medium overflow-x-hidden   md:h-[68%] h-[70%]">
-            <li>
-              <NavLink
-                to={"/admin"}
-                end 
-                className=" p-2.5 theme1 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
-                style={({ isActive, isTransitioning }) => {
-                  return {
-                    fontWeight: isActive ? "bold" : "",
-                    color: isActive ? "white" : "",
-                    background: isActive ? "#1242bf" : "",
-                    viewTransitionName: isTransitioning ? "slide" : "",
-                  };
-                }}
-              >
-                <BiHomeAlt2 size={23} className="min-w-max"/>
-                Inicio
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to={"/admin/surveys"}
-                className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
-                style={({ isActive, isTransitioning }) => {
-                  return {
-                    fontWeight: isActive ? "bold" : "",
-                    color: isActive ? "white" : "",
-                    background: isActive ? "#1242bf" : "",
-                    viewTransitionName: isTransitioning ? "slide" : "",
-                  };
-                }}
-              >
-                <RiSurveyLine  size={23} className="min-w-max" />
-                Encuestas
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to={"/admin/users"}
-                className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
-                style={({ isActive, isTransitioning }) => {
-                  return {
-                    fontWeight: isActive ? "bold" : "",
-                    color: isActive ? "white" : "",
-                    background: isActive ? "#1242bf" : "",
-                    viewTransitionName: isTransitioning ? "slide" : "",
-                  };
-                }}
-              >
-                <TbUserCircle  size={23} className="min-w-max" />
-                Usuarios
-              </NavLink>
-            </li>
+            {storedUser && storedUser?.role?.name == "Administrador" ? (
+              <>
+                <li>
+                  <NavLink
+                    to={"/admin"}
+                    end
+                    className=" p-2.5 theme1 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <BiHomeAlt2 size={23} className="min-w-max" />
+                    Inicio
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={"/admin/surveys"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <RiSurveyLine size={23} className="min-w-max" />
+                    Encuestas
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={"/admin/certificates"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <PiCertificate size={23} className="min-w-max" />
+                    Certificados
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={"/admin/users"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <TbUserCircle size={23} className="min-w-max" />
+                    Usuarios
+                  </NavLink>
+                </li>
 
-            <li>
-              <NavLink
-                to={"/admin/reports"}
-                className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
-                style={({ isActive, isTransitioning }) => {
-                  return {
-                    fontWeight: isActive ? "bold" : "",
-                    color: isActive ? "white" : "",
-                    background: isActive ? "#1242bf" : "",
-                    viewTransitionName: isTransitioning ? "slide" : "",
-                  };
-                }}
-              >
-                <HiOutlineDocumentReport  size={23} className="min-w-max" />
-                Reportes
-              </NavLink>
-            </li>
-              {user?.role.name == 'Administrativo'?(<li>
-              <NavLink
-                to={"/administrativo/pettycash"}
-                className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
-                style={({ isActive, isTransitioning }) => {
-                  return {
-                    fontWeight: isActive ? "bold" : "",
-                    color: isActive ? "white" : "",
-                    background: isActive ? "#1242bf" : "",
-                    viewTransitionName: isTransitioning ? "slide" : "",
-                  };
-                }}
-              >
-                <TbReportMoney   size={23} className="min-w-max" />
-                Caja Chica
-              </NavLink>
-            </li>):("")}
-            
+                <li>
+                  <NavLink
+                    to={"/admin/reports"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <HiOutlineDocumentReport size={23} className="min-w-max" />
+                    Reportes
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={"/admin/settings"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <AiOutlineSetting size={23} className="min-w-max" />
+                    Ajustes
+                  </NavLink>
+                </li>
+              </>
+            ) : (
+              ""
+            )}
 
-            <li>
-              <NavLink
-                to={"/admin/settings"}
-                className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
-                style={({ isActive, isTransitioning }) => {
-                  return {
-                    fontWeight: isActive ? "bold" : "",
-                    color: isActive ? "white" : "",
-                    background: isActive ? "#1242bf" : "",
-                    viewTransitionName: isTransitioning ? "slide" : "",
-                  };
-                }}
-              >
-                <AiOutlineSetting  size={23} className="min-w-max" />
-                Ajustes
-              </NavLink>
-            </li>
+            {storedUser && storedUser?.role?.name == "Administrativo" ? (
+              <>
+                <li>
+                  <NavLink
+                    to={"/administrativo"}
+                    end
+                    className=" p-2.5 theme1 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <BiHomeAlt2 size={23} className="min-w-max" />
+                    Inicio
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={"/administrativo/surveys"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <RiSurveyLine size={23} className="min-w-max" />
+                    Encuestas
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={"/administrativo/users"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <TbUserCircle size={23} className="min-w-max" />
+                    Usuarios
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to={"/administrativo/reports"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <HiOutlineDocumentReport size={23} className="min-w-max" />
+                    Reportes
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to={"/administrativo/pettycash"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <TbReportMoney size={23} className="min-w-max" />
+                    Caja Chica
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to={"/administrativo/settings"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <AiOutlineSetting size={23} className="min-w-max" />
+                    Ajustes
+                  </NavLink>
+                </li>
+              </>
+            ) : (
+              ""
+            )}
           </ul>
+
           {open && (
             <div className="flex text-sm z-50   my-auto  whitespace-pre   w-full    ">
               <div className="flex border-y w-full border-slate-300  items-center px-2.5">

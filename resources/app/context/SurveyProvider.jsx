@@ -24,10 +24,10 @@ const SurveyProvider = ({ children }) => {
   const [hasEditAccess, setHasEditAccess] = useState(true);
 
   const roles = {
-    Administrador: 'admin',
-    Encuestador: 'encuestador',
-    Administrativo: 'administrativo',
-    Participante: 'user',
+    Administrador: "admin",
+    Docente: "teacher",
+    Administrativo: "administrativo",
+    Estudiante: "student",
   };
 
   // Funcione para cambiar el valor de los modal
@@ -528,7 +528,7 @@ const SurveyProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.log(error);
-      toast.error(`${error?.response?.data?.errors}`, {
+      toast.error(`${error}`, {
         position: "top-right",
       });
     }
@@ -556,8 +556,13 @@ const SurveyProvider = ({ children }) => {
 
   // RESPUESTAS DEL SURVEY DESDE USUARIO
   const submitSurveyResponses = async (datos) => {
+    if (!datos.comment) {
+      toast.error(`Comentario vacio`, {
+        position: "bottom-center",
+      });
+      return;
+    }
     const token = localStorage.getItem("AUTH_TOKEN");
-
     try {
       const { data } = await clienteAxios.post(`/api/responses/new`, datos, {
         headers: {
@@ -565,6 +570,7 @@ const SurveyProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+
       setFormData({ title: "", description: "" });
       setQuestions([]);
 
@@ -620,6 +626,7 @@ const SurveyProvider = ({ children }) => {
         setFiltrado,
         submitSurveyResponses,
         userSurvey,
+        setUserSurvey,
         roles,
         getSurveyFillID,
       }}

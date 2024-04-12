@@ -88,6 +88,35 @@ const QuestionResponses = ({ formData, questions, createSurvey }) => {
                     </div>
                   </div>
                 ))}
+
+                {/* Comentarios */}
+            <div className="rounded-md bg-white p-6 shadow-md dark:bg-gray-800">
+              {/* Title and description */}
+              <div className="space-y-2">
+                <h4 className="text-xl font-semibold dark:text-white">
+                  Comentarios
+                </h4>
+              </div>
+              <div className="ml-8 mt-3">
+                {/* Improved condition and JSX structure */}
+                {formData.comments.length < 1 ? (
+                  <span>No hay comentarios</span>
+                ) : (
+                  formData.comments.map((comment, k) => (
+                    <div
+                      key={k}
+                      className="justify-between space-y-2 p-3 odd:bg-slate-50 lg:flex lg:space-y-0 lg:space-x-2 dark:bg-gray-700 transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <h6 className="break-all text-sm dark:text-white">
+                          {comment}
+                        </h6>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
               </div>
             </div>
           </div>

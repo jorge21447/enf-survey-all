@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('survey_id');
+            $table->string('type')->nullable();
             $table->timestamps();
 
             // Claves foráneas

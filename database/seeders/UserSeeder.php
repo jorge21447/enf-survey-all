@@ -29,26 +29,26 @@ class UserSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ),
             array(
+                'name' => 'Kenneth Aliaga',
+                'email' => 'fabricio@gmail.com',
+                'password' => bcrypt('A123456!'),
+                'role_id' => $roles->where('name', 'Administrativo')->first()->id,  // Asigna el rol "Administrativo"
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ),
+            array(
                 'name' => 'Ana García',
-                'email' => 'ana.garcia@example.com',
+                'email' => 'ana.garcia@gmail.com',
                 'password' => bcrypt('A123456!'),
-                'role_id' => $roles->where('name', 'Encuestador')->first()->id,  // Asigna el rol "Encuestador"
+                'role_id' => $roles->where('name', 'Docente')->first()->id,  // Asigna el rol "Docente"
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ),
             array(
-                'name' => 'Pedro López',
-                'email' => 'pedro.lopez@example.com',
+                'name' => 'Jorge Rosa',
+                'email' => 'jorge@gmail.com',
                 'password' => bcrypt('A123456!'),
-                'role_id' => $roles->where('name', 'Participante')->first()->id,  // Asigna el rol "Participante"
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ),
-            array(
-                'name' => 'Juan Lopez',
-                'email' => 'juan.lopez@example.com',
-                'password' => bcrypt('A123456!'),
-                'role_id' => $roles->where('name', 'Administrativo')->first()->id,  // Asigna el rol "Participante"
+                'role_id' => $roles->where('name', 'Estudiante')->first()->id,  // Asigna el rol "Estudiante"
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ),

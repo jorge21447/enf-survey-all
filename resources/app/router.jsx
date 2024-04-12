@@ -1,6 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
-import Layout from "./layouts/Layout";
 import AdminLayout from "./layouts/AdminLayout";
+import DocenteLayout from "./layouts/DocenteLayout"
+import AdministrativoLayout from "./layouts/AdministrativoLayout";
+import EstudianteLayout from "./layouts/EstudianteLayout"
 import Login from "./views/Login";
 import Register from "./views/Register";
 import AuthLayout from "./layouts/AuthLayout";
@@ -12,7 +14,6 @@ import Reports from "./views/Reports";
 import Pettycash from "./views/Pettycash";
 import Settings from "./views/Settings";
 
-// Con fines de testeo
 
 import IndexAdmin from "./views/IndexAdmin";
 import UsersEdit from "./views/UsersEdit";
@@ -22,10 +23,12 @@ import SurveyFill from "./views/SurveyFill";
 import ReportSurvey from "./views/ReportSurvey";
 import Home from "./views/Home";
 import ErrorPage from "./views/ErrorPage"
-import EncuestadorLayout from "./layouts/EncuestadorLayout";
-import AdministrativoLayout from "./layouts/AdministrativoLayout";
-import Certificates from "./views/Certificates";
+
+
+import CertificatesList from "./views/CertificatesList";
 import CertificateData from "./components/CertificateData";
+import Certificates from "./views/Certificates";
+import UsersCertificate from "./components/UsersCertificate";
 
 
 const router = createBrowserRouter([
@@ -50,82 +53,82 @@ const router = createBrowserRouter([
 
   
   {
-    path: "/encuestador",
-    element: <EncuestadorLayout />,
+    path: "/teacher",
+    element: <DocenteLayout />,
     children: [
       {
         index:true,
         element: <Surveys />,
       },
       {
-        path: "/encuestador/surveys",
+        path: "/teacher/surveys",
         element: <Surveys />,
       },
       {
-        path: "/encuestador/surveys/create",
+        path: "/teacher/surveys/create",
         element: <SurveyCreator />,
       },
       {
-        path: "/encuestador/surveys/edit/:id",
+        path: "/teacher/surveys/edit/:id",
         element: <SurveyEditor />,
       },
       {
-        path: "/encuestador/surveysList",
+        path: "/teacher/surveysList",
         element: <SurveysParticipate />,
       },
       {
-        path: "/encuestador/surveysList/fill/:id",
+        path: "/teacher/surveysList/fill/:id",
         element: <SurveyFill />,
       },
       {
-        path: "/encuestador/reports",
+        path: "/teacher/reports",
         element: <Reports />,
       },
       {
-        path: "/encuestador/reports/:id",
+        path: "/teacher/reports/:id",
         element: <ReportSurvey />,
       },
       {
-        path: "/encuestador/settings",
+        path: "/teacher/settings",
         element: <Settings />,
       },
     ],
   },
   {
-    path: "/user",
-    element: <Layout />,
+    path: "/student",
+    element: <EstudianteLayout />,
     children: [
       {
         index: true,
         element: <SurveysParticipate />,
       },
       {
-        path: "/user/surveys",
+        path: "/student/surveysList",
         element: <SurveysParticipate />,
       },
       {
-        path: "/user/surveys/fill/:id",
+        path: "/student/surveysList/fill/:id",
         element: <SurveyFill />,
       },
       {
-        path: "/user/reports",
+        path: "/student/reports",
         element: <Reports />,
       },
       {
-        path: "/user/reports/:id",
+        path: "/student/reports/:id",
         element: <ReportSurvey />,
       },
       
       {
-        path: "/user/certificates",
-        element: <Certificates />,
+        path: "/student/certificatesList",
+        element: <CertificatesList />,
       },
       {
-        path: "/user/certificates/:id",
+        path: "/student/certificatesList/:id",
         element: <CertificateData />,
       },
       {
-        path: "/user/settings",
+        path: "/student/settings",
         element: <Settings />,
       },
     ],
@@ -214,6 +217,18 @@ const router = createBrowserRouter([
         element: <Surveys />,
       },
       {
+        path: "/admin/certificates",
+        element: <Certificates />,
+      },
+      {
+        path: "/admin/certificates/:id",
+        element: <UsersCertificate />,
+      },
+      {
+        path: "/admin/certificates/user/:id",
+        element: <CertificateData />,
+      },
+      {
         path: "/admin/surveys/create",
         element: <SurveyCreator />,
       },
@@ -235,7 +250,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-  
+  {
+    path: "*",
+    element: <ErrorPage/>,
+  }
 ]);
 
 export default router;

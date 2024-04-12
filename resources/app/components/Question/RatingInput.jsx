@@ -17,7 +17,7 @@ const RatingInput = ({
               key={index}
               className="flex flex-col w-1/5 items-center justify-center"
             >
-              <span className="text-xs  font-extralight md:font-normal md:text-sm text-center text-gray-500">
+              <span className="text-xs  font-extralight md:font-normal md:text-sm text-center text-gray-500 dark:text-gray-300">
                 {label}
               </span>
             </div>

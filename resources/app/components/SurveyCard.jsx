@@ -68,7 +68,7 @@ const SurveyCard = ({ data }) => {
           </p>
 
           <div className="mt-4 text-black dark:text-white">
-            <p>Fecha Cierre: {finish_date}</p>
+            <p>Fecha Cierre: {finish_date? finish_date:'No Establecido'}</p>
             <p>Número de Preguntas: {data.sections[0].questions.length}</p>
             <p>Respuestas: {data.responses.length}</p>
           </div>
@@ -77,7 +77,7 @@ const SurveyCard = ({ data }) => {
           <button
             className="bg-white text-black dark:text-white w-full uppercase rounded-2xl hover:bg-gray-950 hover:text-white  font-medium py-2 px-4 shadow-sm dark:bg-gray-600 dark:hover:bg-gray-700"
             onClick={() => {
-              navigate(`/${roles[userSurvey.role.name]}/surveys/fill/${data.id}`);
+              navigate(`/${roles[userSurvey.role.name]}/surveysList/fill/${data.id}`);
             }}
           >
             Responder
