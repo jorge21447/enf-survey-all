@@ -29,6 +29,7 @@ import CertificatesList from "./views/CertificatesList";
 import CertificateData from "./components/CertificateData";
 import Certificates from "./views/Certificates";
 import UsersCertificate from "./components/UsersCertificate";
+import PettyCashList from "./views/PettyCashList";
 
 
 const router = createBrowserRouter([
@@ -178,7 +179,7 @@ const router = createBrowserRouter([
         element: <Pettycash />,
       },
       {
-        path: "/administrativo/pettycash/create",
+        path: "/administrativo/pettycash/new",
         element: <Pettycash />,
       },
       {
@@ -239,6 +240,22 @@ const router = createBrowserRouter([
       {
         path: "/admin/reports",
         element: <Reports />,
+      },
+      {
+        path: "/admin/pettycash",
+        element: <PettyCashList />,
+      },
+      {
+        path: "/admin/pettycash/create",
+        element: <Pettycash />,
+      },
+      {
+        path: "/admin/pettycash/new",
+        element: <Pettycash />,
+      },
+      {
+        path: "/admin/pettycash/edit/:id",
+        element: <Pettycash />,
       },
       {
         path: "/admin/reports/:id",

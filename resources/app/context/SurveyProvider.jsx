@@ -13,6 +13,8 @@ const SurveyProvider = ({ children }) => {
 
   const [modalUser, setModalUser] = useState(false);
 
+  const [modalPettyCash, setModalPettyCash] = useState(false);
+
   const [formData, setFormData] = useState({ title: "", description: "" });
 
   const [filtrado, setFiltrado] = useState("");
@@ -33,6 +35,10 @@ const SurveyProvider = ({ children }) => {
   // Funcione para cambiar el valor de los modal
   const changeStateModalUser = () => {
     setModalUser(!modalUser);
+  };
+
+  const changeStateModalPettyCash = () => {
+    setModalPettyCash(!modalPettyCash);
   };
 
   ////////////////////////////////////
@@ -608,6 +614,8 @@ const SurveyProvider = ({ children }) => {
         createUser,
         editUser,
         modalUser,
+        modalPettyCash,
+        changeStateModalPettyCash,
         changeStateModalUser,
         action,
         colors,

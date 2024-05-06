@@ -9,64 +9,75 @@ import UserModal from "../components/UserModal";
 import useSurvey from "../hooks/useSurvey";
 import ModalTest from "../components/ModalTest";
 import NotAuthorized from "../views/NotAuthorized";
+import PettyCashModal from "../components/PettyCashModal";
 
 const AdminLayout = () => {
-    const { userSurvey, modalUser, changeStateModalUser } = useSurvey();
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { 
+    userSurvey, 
+    modalUser, 
+    changeStateModalUser,
+    modalPettyCash,
+    changeStateModalPettyCash,
+ } = useSurvey();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-    if (!Boolean(localStorage.getItem("user"))) {
-        return <NotAuthorized />;
-    }
+  if (!Boolean(localStorage.getItem("user"))) {
+    return <NotAuthorized />;
+  }
 
-    const customStyles = {
-        overlay: {
-            zIndex: 200,
-        },
-        content: {
-            position: "absolute",
-            background: "none",
-            overflow: "auto",
-            border: "none",
-        },
-    };
+  const customStyles = {
+    overlay: {
+      zIndex: 200,
+    },
+    content: {
+      position: "absolute",
+      background: "none",
+      overflow: "auto",
+      border: "none",
+    },
+  };
 
-    Modal.setAppElement("#root");
+  Modal.setAppElement("#root");
 
-    if (userSurvey?.role?.name === "Administrador") {
-        return (
-            <>
-                <div className="dark:bg-boxdark-2 dark:text-bodydark">
-                    <div className="flex h-screen overflow-hidden">
-                        <SidebarAdmin
-                            sidebarOpen={sidebarOpen}
-                            setSidebarOpen={setSidebarOpen}
-                        />
+  if (userSurvey?.role?.name === "Administrador") {
+    return (
+      <>
+        <div className="dark:bg-boxdark-2 dark:text-bodydark">
+          <div className="flex h-screen overflow-hidden">
+            <SidebarAdmin
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
 
-                        <div className="relative flex flex-1 min-h-screen dark:bg-gray-900  flex-col overflow-y-auto overflow-x-hidden">
-                            <Header
-                                sidebarOpen={sidebarOpen}
-                                setSidebarOpen={setSidebarOpen}
-                            />
+            <div className="relative flex flex-1 min-h-screen dark:bg-gray-900  flex-col overflow-y-auto overflow-x-hidden">
+              <Header
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
 
-                            <main className="bg-gray-50 h-screen   dark:bg-gray-900">
-                                <div className="mx-auto min-h-screen">
-                                    <Outlet />
-                                </div>
-                            </main>
-                        </div>
-                    </div>
+              <main className="bg-gray-50 h-screen   dark:bg-gray-900">
+                <div className="mx-auto min-h-screen">
+                  <Outlet />
                 </div>
+              </main>
+            </div>
+          </div>
+        </div>
 
-                <Modal isOpen={modalUser} style={customStyles}>
-                    <UserModal />
-                </Modal>
+        <Modal isOpen={modalUser} style={customStyles}>
+          <UserModal />
+        </Modal>
 
-                <ToastContainer />
-            </>
-        );
-    } else {
-        return <NotAuthorized />;
-    }
+        <Modal isOpen={modalPettyCash} style={customStyles}>
+          <PettyCashModal />
+        </Modal>
+
+        <ToastContainer />
+      </>
+    );
+  } else {
+    return <NotAuthorized />;
+  }
 };
 
 export default AdminLayout;

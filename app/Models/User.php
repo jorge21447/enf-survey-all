@@ -3,10 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Faker\Provider\ar_EG\Person;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use PDO;
 
 class User extends Authenticatable
 {
@@ -63,13 +66,19 @@ class User extends Authenticatable
         return $this->hasMany(SurveyResponse::class);
     }
 
-    
+
     public function certificates()
     {
         return $this->hasMany(Certificate::class);
     }
+
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function pettyCashBox(){
+        return $this->hasOne(PettyCashBox::class);
+    }
+    
 }

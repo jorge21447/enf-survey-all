@@ -187,6 +187,25 @@ const Sidebar = () => {
                     Reportes
                   </NavLink>
                 </li>
+
+                <li>
+                  <NavLink
+                    to={"/admin/pettycash"}
+                    className="p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium"
+                    style={({ isActive, isTransitioning }) => {
+                      return {
+                        fontWeight: isActive ? "bold" : "",
+                        color: isActive ? "white" : "",
+                        background: isActive ? "#1242bf" : "",
+                        viewTransitionName: isTransitioning ? "slide" : "",
+                      };
+                    }}
+                  >
+                    <TbReportMoney size={23} className="min-w-max" />
+                    Caja Chica
+                  </NavLink>
+                </li>
+
                 <li>
                   <NavLink
                     to={"/admin/settings"}

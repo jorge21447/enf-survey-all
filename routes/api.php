@@ -1,15 +1,18 @@
 <?php
 
 use App\Models\User;
+use App\Models\Refill;
+use App\Models\Expense;
+use App\Models\PettyCashBox;
 use Illuminate\Http\Request;
+use App\Models\SurveyResponse;
+use App\Models\SurveyAssignment;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CertificateController;
-use App\Http\Controllers\SurveyController;
-use App\Http\Controllers\SurveyResponseController;
 use App\Http\Controllers\UserController;
-use App\Models\SurveyAssignment;
-use App\Models\SurveyResponse;
+use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\SurveyResponseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,12 +70,43 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/certificates/{id}', 'show');
     });
 
-    //Usuarios Asignaciones de Roles
+    //Usuarios Asignaciones
 
     Route::controller(SurveyAssignment::class)->group(function () {
         Route::get('/surveyassignment/{id}', 'show');
     });
 
+
+    // Caja Chica
+    Route::controller(PettyCashBox::class)->group(function () {
+        Route::get('/pettycashbox/all', 'getAllPettyCashBox');
+        Route::get('/pettycashbox/{id}', 'showPettyCashBox');
+        Route::post('/pettycashbox/new', 'createPettyCashBox');
+        Route::get('/pettycashbox', 'show');
+        Route::put('/pettycashbox/{id}', 'editPettyCashBox');
+        Route::get('/pettycashbox/{id}/history', 'getPettyCashBoxHistory');
+    });
+
+    // Gastos
+    Route::controller(Expense::class)->group(function () {
+        Route::get('/expenses/all', 'getAllExpenses');
+        Route::get('/expenses/{id}/all', 'getAllExpensesByPettyCashBox');
+        Route::get('/expenses/{id}', 'showExpenses');
+        Route::post('/expenses/new', 'createExpense');
+        Route::put('/expenses/{id}', 'editExpense');
+        Route::delete('/expenses/{id}', 'deleteExpense');
+    });
+
+    // Recargas
+    Route::controller(Refill::class)->group(function () {
+        Route::get('/refills/all', 'getAllRefills');
+        Route::get('/refills/{id}/all', 'getAllRefillsByPettyCashBox');
+        Route::get('/refills/{id}', 'showRefill');
+        Route::post('/refills/new', 'createRefill');
+        Route::put('/refills/{id}', 'editRefill');
+        Route::delete('/refills/{id}', 'deleteRefill');
+    });
+    
 });
 
 Route::controller(AuthController::class)->group(function () {
