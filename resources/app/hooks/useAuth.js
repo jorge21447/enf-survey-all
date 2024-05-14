@@ -10,7 +10,6 @@ export const useAuth = () => {
     const token = localStorage.getItem('AUTH_TOKEN')
     const navigate = useNavigate()
 
-
     const { data: user, error, mutate } = useSWR('/api/user', () => (
         clienteAxios('/api/user', {
             headers: {

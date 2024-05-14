@@ -26,6 +26,7 @@ class RegisterRequest extends FormRequest
         return [
             'name' => ['required', 'string'],
             'email' => ['required', 'email', 'unique:users,email'],
+            'ci' => ['required', 'unique:users,ci', 'string'],
             'password' => [
                 'required',
                 'confirmed',
@@ -42,6 +43,8 @@ class RegisterRequest extends FormRequest
             'email.required' => 'El email es obligatorio',
             'email.email' => 'El email no tiene un formato válido',
             'email.unique' => 'El email ya se encuentra registrado',
+            'ci.required' => 'La cédula de identidad es obligatoria',
+            'ci.unique' => 'La cédula de identidad ya se encuentra registrada',
             'password' => 'La contraseña debe contener al menos 8 caracteres, un símbolo y un número.',
             'password.required' => 'La contraseña es obligatoria',
             'password.confirmed' => 'Las contraseñas deben coincidir. ',

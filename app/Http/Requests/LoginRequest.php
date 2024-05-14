@@ -13,7 +13,6 @@ class LoginRequest extends FormRequest
     {
         return true;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +21,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'exists:users,email'],
+            'identifier' => ['required', 'string'],
             'password' => 'required'
         ];
     }
@@ -30,9 +29,7 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => 'El email es obligatorio',
-            'email.email' => 'El email no es válido',
-            'email.exists' => 'Esa cuenta no existe',
+            'identifier.required' => 'El email o CI es obligatorio',
             'password' => 'La contraseña es obligatoria'
         ];
     }
