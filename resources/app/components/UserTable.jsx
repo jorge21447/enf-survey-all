@@ -26,8 +26,10 @@ const UserTable = ({ users, handleDelete }) => {
         dato.name.toLowerCase().includes(search.toLocaleLowerCase())
       );
 
-
   const prepareUserDataForCSV = (userData) => {
+    if (!Array.isArray(userData)) {
+      return [];
+    }
     return userData.map((user) => ({
       id: user.id,
       name: user.name,
@@ -82,7 +84,6 @@ const UserTable = ({ users, handleDelete }) => {
                   Añadir Usuario
                 </button>
 
-
                 <CSVLink
                   data={prepareUserDataForCSV(results)}
                   filename="user-data.csv"
@@ -123,7 +124,7 @@ const UserTable = ({ users, handleDelete }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {results?.length > 0 ? (
+                  { results?.length > 0 ? (
                     results.map((user) => (
                       <tr
                         className="border-b dark:border-gray-700"
@@ -158,10 +159,13 @@ const UserTable = ({ users, handleDelete }) => {
                           <div className="flex items-center align-items-center">
                             <div
                               className={`${
-                                user.is_active ? "bg-green-400" : "bg-red-400"
-                              } h-4 w-4 rounded-full inline-block mr-2 `}
-                            ></div>
-                            {user.is_active ? "Activo" : "No Activo"}
+                                user.is_active
+                                  ? "bg-green-200 dark:bg-green-700 text-green-800 dark:text-green-100"
+                                  : "bg-red-200 dark:bg-red-600 text-red-900 dark:text-red-100"
+                              } h inline-block mr-2 px-2 py-0.5 rounded`}
+                            >
+                              {user.is_active ? "Activado" : "Desactivado"}
+                            </div>
                           </div>
                         </td>
                         <td className="px-4 py-3  font-medium text-gray-900 whitespace-nowrap dark:text-white">

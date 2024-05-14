@@ -12,8 +12,11 @@ const SurveyProvider = ({ children }) => {
   const token = localStorage.getItem("AUTH_TOKEN");
 
   const [modalUser, setModalUser] = useState(false);
-
   const [modalPettyCash, setModalPettyCash] = useState(false);
+  const [modalPettyCashExpense, setModalPettyCashExpense] = useState(false);
+  const [modalPettyCashHistory, setModalPettyCashHistory] = useState(false);
+
+  const [expenseSelected, setExpenseSelected] = useState({});
 
   const [formData, setFormData] = useState({ title: "", description: "" });
 
@@ -40,6 +43,15 @@ const SurveyProvider = ({ children }) => {
   const changeStateModalPettyCash = () => {
     setModalPettyCash(!modalPettyCash);
   };
+
+  const changeStateModalPettyCashExpense = () => {
+    setModalPettyCashExpense(!modalPettyCashExpense);
+  };
+
+  const changeStateModalPettyCashHistory = () => {
+    setModalPettyCashHistory(!modalPettyCashHistory);
+  };
+
 
   ////////////////////////////////////
   // CONSULTAS PARA LOS USUARIOS
@@ -596,6 +608,188 @@ const SurveyProvider = ({ children }) => {
     }
   };
 
+  // CAJA CHICA
+  const createPettyCash = async (datos, setErrores) => {
+    const token = localStorage.getItem("AUTH_TOKEN");
+    try {
+      const { data } = await clienteAxios.post(`/api/pettycashbox/new`, datos, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      changeStateModalPettyCash();
+      toast.success(`${data?.message}`, {
+        position: "top-right",
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      setErrores(Object.values(error?.response?.data?.errors));
+      return false;
+    }
+  };
+
+  const editPettyCashBox = async (datos, setErrores, id) => {
+    const token = localStorage.getItem("AUTH_TOKEN");
+    try {
+      const { data } = await clienteAxios.put(`/api/pettycashbox/${id}`, datos, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success(`${data?.message}`, {
+        position: "top-right",
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      setErrores(Object.values(error?.response?.data?.errors));
+      return false;
+    }
+  };
+
+
+
+  const deletePettyCashBox = async (id, onSucess) => {
+    Swal.fire({
+      title: "¿Estás seguro de que quieres eliminar la caja chica?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#1242bf",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "No, cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const { data } = await clienteAxios.delete(`/api/pettycashbox/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          Swal.fire({
+            title: "Caja Chica eliminada!",
+            text: data?.message,
+            icon: "success",
+          });
+          toast.success(`${data?.message}`, {
+            position: "top-right",
+          });
+          onSucess()
+        } catch (error) {
+          Swal.fire({
+            title: "¡Error al eliminar la Caja Chica!",
+            text: error,
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
+
+  ////////////////////////////////////
+  // GASTOS
+  ////////////////////////////////////
+
+  const createExpense = async (datos, setErrores, id) => {
+    const token = localStorage.getItem("AUTH_TOKEN");
+    try {
+      const { data } = await clienteAxios.post(`/api/expenses/new/${id}`, datos, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success(`${data?.message}`, {
+        position: "top-right",
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      setErrores(Object.values(error?.response?.data?.errors));
+      return false;
+    }
+  };
+
+
+  const editExpense = async (datos, setErrores, id) => {
+
+    const token = localStorage.getItem("AUTH_TOKEN");
+    try {
+      const { data } = await clienteAxios.put(`/api/expenses/${id}`, datos, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success(`${data?.message}`, {
+        position: "top-right",
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      setErrores(Object.values(error?.response?.data?.errors));
+      return false;
+    }
+  };
+
+  const deleteExpense = async (id, onSucess) => {
+    Swal.fire({
+      title: "¿Estás seguro de que quieres eliminar el gasto?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#1242bf",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "No, cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const { data } = await clienteAxios.delete(`/api/expenses/${id}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          Swal.fire({
+            title: "Gasto eliminado!",
+            text: data?.message,
+            icon: "success",
+          });
+          toast.success(`${data?.message}`, {
+            position: "top-right",
+          });
+          onSucess()
+        } catch (error) {
+          Swal.fire({
+            title: "¡Error al eliminar el gasto!",
+            text: error,
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
+
+  const createRefill = async (datos, setErrores, id) => {
+    const token = localStorage.getItem("AUTH_TOKEN");
+    try {
+      const { data } = await clienteAxios.post(`/api/refills/new/${id}`, datos, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success(`${data?.message}`, {
+        position: "top-right",
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      setErrores(Object.values(error?.response?.data?.errors));
+      return false;
+    }
+  };
+
   useEffect(() => {
     if (localStorage.getItem("user")) {
       const informacionDesencriptada = CryptoJS.AES.decrypt(
@@ -615,8 +809,12 @@ const SurveyProvider = ({ children }) => {
         editUser,
         modalUser,
         modalPettyCash,
+        modalPettyCashExpense,
+        modalPettyCashHistory,
         changeStateModalPettyCash,
         changeStateModalUser,
+        changeStateModalPettyCashExpense,
+        changeStateModalPettyCashHistory,
         action,
         colors,
         colorSS,
@@ -637,6 +835,15 @@ const SurveyProvider = ({ children }) => {
         setUserSurvey,
         roles,
         getSurveyFillID,
+        createPettyCash,
+        editPettyCashBox,
+        deletePettyCashBox,
+        createExpense,
+        editExpense,
+        deleteExpense,
+        setExpenseSelected,
+        expenseSelected,
+        createRefill,
       }}
     >
       {children}

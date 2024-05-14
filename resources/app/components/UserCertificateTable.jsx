@@ -13,7 +13,7 @@ import CertificatePDF from "./CertificatePDF";
 const UserCertificateTable = ({ users }) => {
   const navigate = useNavigate();
 
-  const { changeStateModalUser, userSurvey, roles } = useSurvey();
+  const { userSurvey, roles } = useSurvey();
 
   const [search, setSearch] = useState("");
 
@@ -44,7 +44,6 @@ const UserCertificateTable = ({ users }) => {
     }));
   };
 
-  console.log(results, "General");
 
   return (
     <>

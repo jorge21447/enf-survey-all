@@ -26,6 +26,11 @@ class UserController extends Controller
         return new UserCollection(User::with('role')->get());
     }
 
+    public function getAdministrativeUsers()
+    {
+        return new UserCollection(User::where('role_id', 2)->get());
+    }
+
     /**
      * Store a newly created resource in storage.
      */

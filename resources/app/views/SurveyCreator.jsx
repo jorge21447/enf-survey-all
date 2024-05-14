@@ -75,6 +75,8 @@ const SurveyCreator = () => {
     }
   };
 
+  
+
   return (
     <>
       <div className="flex items-center justify-between flex-col md:flex-row  h-full mx-auto w-full md:w-5/6 bg-slate-50 dark:bg-gray-800  rounded-2xl ">

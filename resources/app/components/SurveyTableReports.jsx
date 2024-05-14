@@ -140,7 +140,7 @@ const SurveyTableReports = ({surveys}) => {
                         colSpan="5"
                         className="px-4 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center"
                       >
-                        No hay encuestass.
+                        No hay encuestas.
                       </td>
                     </tr>
                   )}

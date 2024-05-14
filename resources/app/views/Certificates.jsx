@@ -26,7 +26,6 @@ const Certificates = () => {
   });
 
 
-  console.log(data)
 
   return (
     <>

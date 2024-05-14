@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('petty_cash_box_id')->constrained()->onDelete('cascade');
             $table->decimal('amount', 8, 2);
-            $table->string('category');
-            $table->date('expense_date');
+            $table->string('invoiceNumber')->nullable();
             $table->string('description')->nullable();
+            $table->string('interested')->nullable();
+            $table->bigInteger('number')->nullable();
+            $table->date('expenseDate');
             $table->timestamps();
         });
     }

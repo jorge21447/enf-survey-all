@@ -12,7 +12,7 @@ class Refill extends Model
     protected $fillable = [
         'amount',
         'description',
-        'refillDate',
+        'refill_date',
         'source',
         'petty_cash_box_id'
     ];

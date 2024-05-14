@@ -7,17 +7,38 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserModal from "../components/UserModal";
 import useSurvey from "../hooks/useSurvey";
-import ModalTest from "../components/ModalTest";
 import NotAuthorized from "../views/NotAuthorized";
+import PettyCashBoxExpenseModal from "../components/PettyCashBoxExpenseModal";
 
 const AdministrativoLayout = () => {
-  const { userSurvey, modalUser, changeStateModalUser } = useSurvey();
+  const {
+    userSurvey,
+    modalUser,
+    modalPettyCashExpense,
+    modalPettyCashHistory,
+  } = useSurvey();
+
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   if (!userSurvey || !Object.keys(userSurvey).length) {
     return <NotAuthorized />;
   }
 
+  const customStyles2 = {
+    overlay: {
+      zIndex: 200,
+    },
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      padding: "0px",
+      border: "none",
+    },
+  };
   const customStyles = {
     overlay: {
       zIndex: 200,
@@ -62,6 +83,14 @@ const AdministrativoLayout = () => {
 
           <Modal isOpen={modalUser} style={customStyles}>
             <UserModal />
+          </Modal>
+
+          <Modal isOpen={modalPettyCashExpense} style={customStyles2}>
+            <PettyCashBoxExpenseModal />
+          </Modal>
+
+          <Modal isOpen={modalPettyCashHistory} style={customStyles2}>
+            <PettyCashBoxExpenseModal />
           </Modal>
 
           <ToastContainer />

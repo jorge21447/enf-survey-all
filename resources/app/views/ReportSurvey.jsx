@@ -29,7 +29,6 @@ const ReportSurvey = () => {
     surveyID(id);
   }, [id]);
 
-  console.log('reports', formData)
 
   return (
     <>

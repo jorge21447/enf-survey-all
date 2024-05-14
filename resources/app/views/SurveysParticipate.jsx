@@ -20,7 +20,6 @@ const SurveysParticipate = () => {
   const { data, error, isLoading } = useSWR("/api/surveys/users", fetcher, {
     refreshInterval: 1000,
   });
-  console.log(data)
 
   return (
     <>

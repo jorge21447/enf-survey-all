@@ -11,10 +11,12 @@ class Expense extends Model
 
     protected $fillable = [
         'amount',
-        'category',
+        'invoiceNumber',
         'expenseDate',
         'description',
-        'petty_cash_box_id'
+        'petty_cash_box_id',
+        'interested',
+        'number',
     ];
 
     public function pettyCashBox()

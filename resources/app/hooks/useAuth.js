@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import useSWR from 'swr'
 import { useNavigate } from "react-router-dom"
 import clienteAxios from "../config/axios"
@@ -7,7 +6,7 @@ import CryptoJS from "crypto-js"
 import useSurvey from "./useSurvey"
 
 export const useAuth = () => {
-    const { userSurvey, setUserSurvey } = useSurvey()
+    const { setUserSurvey } = useSurvey()
     const token = localStorage.getItem('AUTH_TOKEN')
     const navigate = useNavigate()
 
@@ -22,12 +21,21 @@ export const useAuth = () => {
             .catch(error => {
                 throw Error(error?.response?.data?.errors)
             })
-    ))
+    ), {
+        refreshInterval: 0,
+        revalidateOnFocus: false,
+        revalidateIfStale: false,
+        revalidateOnReconnect: false
+    })
 
     const login = async (datos, setErrores) => {
         try {
             const { data } = await clienteAxios.post('/api/login', datos)
 
+            if (data.user.is_active == '0') {
+                navigate('/not-activated')
+                return
+            }
 
             const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data.user), '@enf_survey');
             localStorage.setItem('user', encryptedData)
@@ -84,16 +92,16 @@ export const useAuth = () => {
                 if (data.user.role.name == 'Docente') {
                     navigate('/teacher')
                 }
-    
                 if (data.user.role.name == 'Estudiante') {
                     navigate('/student')
                 }
-            }, 4000); // Cambiar el tiempo según sea necesario
+            }, 3000); // Cambiar el tiempo según sea necesario
         } catch (error) {
-            toast.error(`${error}`, {
-                position: "top-right",
-            });
+            // toast.error(`${error}`, {
+            //     position: "top-right",
+            // });
             setErrores(Object.values(error?.response?.data?.errors || []))
+            window.scrollTo({ top: 0, behavior: 'smooth' })
         }
 
     }

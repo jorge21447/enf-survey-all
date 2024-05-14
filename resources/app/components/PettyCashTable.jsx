@@ -3,10 +3,11 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { MdAdd } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
+import { RiMoneyDollarBoxLine } from "react-icons/ri";
 import useSurvey from "../hooks/useSurvey";
 import { useNavigate } from "react-router-dom";
 
-const PettyCashTable = ({ users, handleDelete }) => {
+const PettyCashTable = ({ pettycashboxes, handleDelete }) => {
   const navigate = useNavigate();
 
   const { changeStateModalPettyCash, userSurvey, roles } = useSurvey();
@@ -18,8 +19,8 @@ const PettyCashTable = ({ users, handleDelete }) => {
   };
 
   const results = !search
-    ? users
-    : users.filter((dato) =>
+    ? pettycashboxes
+    : pettycashboxes.filter((dato) =>
         dato.name.toLowerCase().includes(search.toLocaleLowerCase())
       );
 
@@ -91,31 +92,30 @@ const PettyCashTable = ({ users, handleDelete }) => {
                 </thead>
                 <tbody>
                   {results?.length > 0 ? (
-                    results.map((user) => (
+                    results.map((pettycash) => (
                       <tr
                         className="border-b dark:border-gray-700"
-                        key={user.id}
+                        key={pettycash.id}
                       >
                         <th
                           scope="row"
                           className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                         >
                           <div className="flex items-center mr-3">
-                            
-                            {user.name}
+                            {pettycash.name}
                           </div>
                         </th>
                         <td className="px-4 py-3 max-w-[12rem] truncate">
-                          {user.email}
+                          {pettycash.description}
                         </td>
                         <td className="px-4 py-3">
                           <span className="bg-blue-100 text-cyan-600 text-xs font-medium px-2 py-0.5 rounded dark:bg-cyan-900 dark:text-cyan-300">
-                            {user.role.name}
+                            {pettycash.balance}
                           </span>
                         </td>
                         <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                           <div className="flex  align-items-center">
-                            {user.is_active}
+                            {pettycash.user?.name}
                           </div>
                         </td>
                         <td className="px-4 py-3  font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -125,17 +125,29 @@ const PettyCashTable = ({ users, handleDelete }) => {
                               className="gap-1 py-2 px-3 flex items-center text-sm font-medium text-center text-white 
                           bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
                               onClick={() => {
-                                navigate(`/admin/users/edit/${user.id}`);
+                                navigate(`/admin/pettycash/edit/${pettycash.id}`);
                               }}
                             >
                               <FiEdit />
                               Editar
                             </button>
+
+                            <button
+                              type="button"
+                              className="gap-1 py-2 px-3 flex items-center text-sm font-medium text-center text-white 
+                          bg-teal-700 rounded-lg hover:bg-teal-800 focus:ring-4 focus:outline-none focus:ring-teal-300 dark:bg-teal-600 dark:hover:bg-teal-700 dark:focus:ring-teal-800"
+                              onClick={() => {
+                                navigate(`/admin/pettycash/${pettycash.id}/expenses`);
+                              }}
+                            >
+                              <RiMoneyDollarBoxLine  />
+                              Gastos
+                            </button>
                             {userSurvey?.role?.name == "Administrador" ? (
                               <button
                                 type="button"
                                 className="gap-1 flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                                onClick={() => handleDelete(user.name, user.id)}
+                                onClick={() => handleDelete(pettycash.id)}
                               >
                                 <RiDeleteBin6Fill />
                                 Eliminar

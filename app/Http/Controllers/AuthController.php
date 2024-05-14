@@ -22,11 +22,11 @@ class AuthController extends Controller
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
                 'role_id' => $data['role_id'],
-                
+
             ]);
             $token = $user->createToken('token')->plainTextToken;
             $user2 = User::with('role')->find($user->id);
-            $user2->photo_profile = $user->photo_profile? asset($user->photo_profile):'';
+            $user2->photo_profile = $user->photo_profile ? asset($user->photo_profile) : '';
             return [
                 'token' => $token,
                 'user' => $user2,
@@ -52,13 +52,19 @@ class AuthController extends Controller
         //Autenticar al usuario
         $user = Auth::user();
         $user2 = User::with('role')->find($user->id);
-        $user2->photo_profile = $user->photo_profile? asset($user->photo_profile):'';
+        $user2->photo_profile = $user->photo_profile ? asset($user->photo_profile) : '';
         $token = $user->createToken('token')->plainTextToken;
+
+
+        // Verificar si el usuario tiene una caja chica
+        $hasPettyCashBox = $user2->pettyCashBox()->exists();
+
+        // Agregar la información sobre la caja chica dentro del objeto user2
+        $user2->hasPettyCashBox = $hasPettyCashBox;
 
         return [
             'token' => $token,
             'user' => $user2,
-
         ];
     }
     public function logout(Request $request)

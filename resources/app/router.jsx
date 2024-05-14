@@ -1,36 +1,38 @@
 import { createBrowserRouter } from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout";
-import DocenteLayout from "./layouts/DocenteLayout"
+import DocenteLayout from "./layouts/DocenteLayout";
 import AdministrativoLayout from "./layouts/AdministrativoLayout";
-import EstudianteLayout from "./layouts/EstudianteLayout"
+import EstudianteLayout from "./layouts/EstudianteLayout";
 import Login from "./views/Login";
 import Register from "./views/Register";
 import AuthLayout from "./layouts/AuthLayout";
-import Index from "./views/Index";
 import Users from "./views/Users";
 import Surveys from "./views/Surveys";
 import SurveyCreator from "./views/SurveyCreator";
 import Reports from "./views/Reports";
-import Pettycash from "./views/Pettycash";
 import Settings from "./views/Settings";
 
-
-import IndexAdmin from "./views/IndexAdmin";
 import UsersEdit from "./views/UsersEdit";
 import SurveyEditor from "./views/SurveyEditor";
 import SurveysParticipate from "./views/SurveysParticipate";
 import SurveyFill from "./views/SurveyFill";
 import ReportSurvey from "./views/ReportSurvey";
 import Home from "./views/Home";
-import ErrorPage from "./views/ErrorPage"
-
+import ErrorPage from "./views/ErrorPage";
 
 import CertificatesList from "./views/CertificatesList";
 import CertificateData from "./components/CertificateData";
 import Certificates from "./views/Certificates";
 import UsersCertificate from "./components/UsersCertificate";
 import PettyCashList from "./views/PettyCashList";
-
+import UserNotActivated from "./views/UserNotActivated";
+import ExpensesTable from "./components/ExpensesTable";
+import ExpenseCreate from "./components/ExpenseCreate";
+import EditPettyCashBox from "./components/EditPettyCashBox";
+import PettyCashBox from "./views/PettyCashBox";
+import ExpensesTableAdministrative from "./components/ExpensesTableAdministrative";
+import PettyCashBoxRecord from "./components/PettyCashBoxRecord";
+import RefillCreate from "./components/RefillCreate";
 
 const router = createBrowserRouter([
   {
@@ -52,13 +54,12 @@ const router = createBrowserRouter([
     ],
   },
 
-  
   {
     path: "/teacher",
     element: <DocenteLayout />,
     children: [
       {
-        index:true,
+        index: true,
         element: <Surveys />,
       },
       {
@@ -119,7 +120,7 @@ const router = createBrowserRouter([
         path: "/student/reports/:id",
         element: <ReportSurvey />,
       },
-      
+
       {
         path: "/student/certificatesList",
         element: <CertificatesList />,
@@ -176,15 +177,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/administrativo/pettycash",
-        element: <Pettycash />,
+        element: <PettyCashBox />,
       },
       {
-        path: "/administrativo/pettycash/new",
-        element: <Pettycash />,
+        path: "/administrativo/pettycash/:id/record",
+        element: <PettyCashBoxRecord />,
       },
       {
-        path: "/administrativo/pettycash/edit/:id",
-        element: <Pettycash />,
+        path: "/administrativo/pettycash/:id/record/create",
+        element: <RefillCreate />,
+      },
+      {
+        path: "/administrativo/pettycash/:id/expenses",
+        element: <ExpensesTableAdministrative />,
+      },
+      {
+        path: "/administrativo/pettycash/:id/expenses/create",
+        element: <ExpenseCreate />,
+      },
+      {
+        path: "/administrativo/pettycash/:id/expenses/edit/:idE",
+        element: <ExpenseCreate />,
       },
       {
         path: "/administrativo/reports/:id",
@@ -194,7 +207,7 @@ const router = createBrowserRouter([
         path: "/administrativo/settings",
         element: <Settings />,
       },
-      { }
+      {},
     ],
   },
   {
@@ -246,16 +259,20 @@ const router = createBrowserRouter([
         element: <PettyCashList />,
       },
       {
-        path: "/admin/pettycash/create",
-        element: <Pettycash />,
-      },
-      {
-        path: "/admin/pettycash/new",
-        element: <Pettycash />,
-      },
-      {
         path: "/admin/pettycash/edit/:id",
-        element: <Pettycash />,
+        element: <EditPettyCashBox />,
+      },
+      {
+        path: "/admin/pettycash/:id/expenses",
+        element: <ExpensesTable />,
+      },
+      {
+        path: "/admin/pettycash/:id/expenses/create",
+        element: <ExpenseCreate />,
+      },
+      {
+        path: "/admin/pettycash/:id/expenses/edit/:idE",
+        element: <ExpenseCreate />,
       },
       {
         path: "/admin/reports/:id",
@@ -268,9 +285,13 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: "/not-activated",
+    element: <UserNotActivated />,
+  },
+  {
     path: "*",
-    element: <ErrorPage/>,
-  }
+    element: <ErrorPage />,
+  },
 ]);
 
 export default router;

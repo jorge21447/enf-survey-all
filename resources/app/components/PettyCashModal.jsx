@@ -1,39 +1,71 @@
-import { createRef, useState } from "react";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 import useSurvey from "../hooks/useSurvey";
 import { MdClose } from "react-icons/md";
 import Alerta from "./Alerta";
+import clienteAxios from "../config/axios";
+import Loader from "./Loader";
+import { useNavigate } from "react-router-dom";
 
 const PettyCashModal = () => {
-  const { changeStateModalPettyCash, createUser } = useSurvey();
+  const { changeStateModalPettyCash, createPettyCash } = useSurvey();
   const [errores, setErrores] = useState([]);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [balance, setBalance] = useState(0);
+  const [userRes, setUserRes] = useState("");
+  const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
-  const nameRef = createRef();
-  const emailRef = createRef();
-  const role_idRef = createRef();
-  const date_of_birthRef = createRef();
-  const is_activeRef = createRef();
-  const photo_profileRef = createRef();
-  const passwordRef = createRef();
+  const token = localStorage.getItem("AUTH_TOKEN");
+  const fetcher = () =>
+    clienteAxios("/api/users/administrative", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((data) => data.data);
+
+  const { data, error, isLoading } = useSWR(
+    "/api/users/administrative",
+    fetcher,
+    {
+      refreshInterval: 0,
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+    }
+  );
+
+  useEffect(() => {
+    const getUsers = async () => {
+      if (!isLoading) {
+        setUsers(data.data);
+      }
+    };
+    getUsers();
+  }, [isLoading, data]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setErrores([]);
 
+    const datos = {
+      name,
+      description,
+      balance,
+      user_id: userRes,
+    };
+    console.log(datos);
 
-    const formData = new FormData();
-
-    // Agregar los valores de los campos del formulario al FormData
-    formData.append("name", nameRef.current.value);
-    formData.append("email", emailRef.current.value);
-    formData.append("role_id", role_idRef.current.value);
-    formData.append("date_of_birth", date_of_birthRef.current.value);
-    formData.append("is_active", is_activeRef.current.value);
-    formData.append("password", passwordRef.current.value);
-
-
-    createUser(formData, setErrores);
+    const resultado = await createPettyCash(datos, setErrores);
+    if (resultado) {
+      navigate("/admin/pettycash");
+    }
   };
+
+  if (isLoading) return <Loader />;
 
   return (
     <>
@@ -58,16 +90,12 @@ const PettyCashModal = () => {
                 <span className="sr-only">Cerrar</span>
               </button>
             </div>
-            <form
-              noValidate
-              onSubmit={handleSubmit}
-              encType={`multipart/form-data`}
-            >
+            <form noValidate onSubmit={handleSubmit}>
               {errores
                 ? errores.map((error, i) => <Alerta key={i}>{error}</Alerta>)
                 : null}
               <div className="grid gap-4 mb-4 sm:grid-cols-2 pb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
-                <div>
+                <div className="sm:col-span-2">
                   <label
                     htmlFor="name"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -79,107 +107,66 @@ const PettyCashModal = () => {
                     name="name"
                     id="name"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    placeholder="Alan Montes Castillo"
-                    ref={nameRef}
+                    placeholder="Caja Chica 1"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
-                </div>
-                <div>
-                  <label
-                    htmlFor="role"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Rol
-                  </label>
-                  <select
-                    id="role"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    ref={role_idRef}
-                  >
-                    <option value={1}>Administrador</option>
-                    <option value={2}>Administrativo</option>
-                    <option value={3}>Docente</option>
-                    <option value={4}>Estudiante</option>
-                  </select>
-                </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    placeholder="example@example.com"
-                    ref={emailRef}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="date_of_birth"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Fecha de Nacimiento
-                  </label>
-                  <input
-                    type="date"
-                    name="date_of_birth"
-                    id="date_of_birth"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    ref={date_of_birthRef}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    placeholder="************"
-                    ref={passwordRef}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="is_active"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Activo
-                  </label>
-                  <select
-                    id="is_active"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    ref={is_activeRef}
-                  >
-                    <option value={1}>Activo</option>
-                    <option value={0}>No activo</option>
-                  </select>
                 </div>
                 <div className="sm:col-span-2">
                   <label
-                    htmlFor="photo_profile"
+                    htmlFor="description"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Foto de perfil
+                    Descripción
                   </label>
                   <input
-                    type="file"
-                    name="photo_profile"
-                    id="photo_profile"
+                    type="text"
+                    name="description"
+                    id="description"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                    placeholder="105"
-                    ref={photo_profileRef}
+                    placeholder="Descripción"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                   />
+                </div>
+                <div className="sm:col-span-2">
+                  <label
+                    htmlFor="balance"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Balance
+                  </label>
+                  <input
+                    type="number"
+                    name="balance"
+                    id="balance"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="Descripción"
+                    value={balance}
+                    onChange={(e) => setBalance(e.target.value)}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label
+                    htmlFor="userR"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Usuario Responsable
+                  </label>
+                  <select
+                    id="userR"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    value={userRes}
+                    onChange={(e) => setUserRes(e.target.value)}
+                  >
+                    <option value={""}>Elige un Responsble</option>
+                    {users.length > 0 &&
+                      users.map((user) => (
+                        <option key={user.id} value={user.id}>
+                          {user.name}
+                        </option>
+                      ))}
+                  </select>
                 </div>
               </div>
               <div className="items-center space-y-10 sm:flex sm:space-y-0 sm:space-x-4 ">
@@ -187,7 +174,7 @@ const PettyCashModal = () => {
                   type="submit"
                   className="w-full sm:w-auto justify-center text-white inline-flex bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
                 >
-                  Añadir usuario
+                  Crear Caja Chica
                 </button>
                 <button
                   type="button"

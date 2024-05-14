@@ -12,9 +12,7 @@ import {
 import RobotoRegular from "../fonts/Roboto/Roboto-Regular.ttf";
 import RobotoBlack from "../fonts/Roboto/Roboto-Black.ttf";
 import RobotoBold from "../fonts/Roboto/Roboto-Bold.ttf";
-import BesleySemiBold from "../fonts/Besley/Besley-SemiBold.ttf";
 import LatoRegular from "../fonts/Lato/Lato-Regular.ttf";
-import BalthazarRegular from "../fonts/Balthazar/Balthazar-Regular.ttf";
 import LatoBold from "../fonts/Lato/Lato-Bold.ttf";
 import LatoBlack from "../fonts/Lato/Lato-Black.ttf";
 import TinoBold from "../fonts/Tinos/Tinos-Bold.ttf"
@@ -22,14 +20,11 @@ import TinoBold from "../fonts/Tinos/Tinos-Bold.ttf"
 Font.register({ family: "RobotoRegular", src: RobotoRegular });
 Font.register({ family: "RobotoBold", src: RobotoBold });
 Font.register({ family: "RobotoBlack", src: RobotoBlack });
-Font.register({ family: "BesleySemiBold", src: BesleySemiBold });
 Font.register({ family: "LatoRegular", src: LatoRegular });
 Font.register({ family: "LatoBold", src: LatoBold });
 Font.register({ family: "LatoBlack", src: LatoBlack });
-Font.register({ family: "BalthazarRegular", src: BalthazarRegular });
 Font.register({ family: "TinoBold", src: TinoBold });
 
-console.log(Font.getRegisteredFonts());
 
 const CertificatePDF = ({ users }) => {
   // Obtener mes y año actual

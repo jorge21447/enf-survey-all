@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('amount', 8, 2);
             $table->string('description')->nullable();
             $table->date('refill_date');
-            $table->string('source');
+            $table->string('source')->nullable();
             $table->timestamps();
         });
     }
