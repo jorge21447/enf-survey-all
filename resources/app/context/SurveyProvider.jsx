@@ -15,8 +15,10 @@ const SurveyProvider = ({ children }) => {
   const [modalPettyCash, setModalPettyCash] = useState(false);
   const [modalPettyCashExpense, setModalPettyCashExpense] = useState(false);
   const [modalPettyCashHistory, setModalPettyCashHistory] = useState(false);
+  const [modalShareSurvey, setModalShareSurvey] = useState(false);
 
   const [expenseSelected, setExpenseSelected] = useState({});
+  const [surveySelected, setSurveySelected] = useState('');
 
   const [formData, setFormData] = useState({ title: "", description: "" });
 
@@ -25,14 +27,17 @@ const SurveyProvider = ({ children }) => {
   const [questions, setQuestions] = useState([]);
   const [loadingFormData, setLoadingFormData] = useState(true);
 
-  const [colorSS, setColorSS] = useState("c2");
+  const [colorSS, setColorSS] = useState("default");
   const [hasEditAccess, setHasEditAccess] = useState(true);
+
+  const [error404, setError404] = useState(false);
 
   const roles = {
     Administrador: "admin",
-    Docente: "teacher",
+    Docente: "user",
     Administrativo: "administrativo",
-    Estudiante: "student",
+    Estudiante: "user",
+    'Docente Asistencial': "user",
   };
 
   // Funcione para cambiar el valor de los modal
@@ -50,6 +55,10 @@ const SurveyProvider = ({ children }) => {
 
   const changeStateModalPettyCashHistory = () => {
     setModalPettyCashHistory(!modalPettyCashHistory);
+  };
+
+  const changeStateModalShareSurvey = () => {
+    setModalShareSurvey(!modalShareSurvey);
   };
 
 
@@ -543,7 +552,7 @@ const SurveyProvider = ({ children }) => {
       });
       setFormData(data[0]);
       setQuestions(data[0].questions);
-      return true;
+      return data[0];
     } catch (error) {
       console.log(error);
       toast.error(`${error}`, {
@@ -565,10 +574,13 @@ const SurveyProvider = ({ children }) => {
       setQuestions(data[0].questions);
       return true;
     } catch (error) {
-      console.log(error);
-      toast.error(`${error?.response?.data?.errors}`, {
-        position: "top-right",
-      });
+      if (error.response?.status === 404) {
+        setError404(true);
+      } else {
+        toast.error(`${error?.response?.data?.errors}`, {
+          position: "top-right",
+        });
+      }
     }
   };
 
@@ -599,7 +611,7 @@ const SurveyProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
       if (error) {
-        error?.response?.data?.errors.map((err, i) => {
+        error?.response?.data?.errors?.map((err, i) => {
           toast.error(`${(i, err)}`, {
             position: "top-right",
           });
@@ -811,10 +823,12 @@ const SurveyProvider = ({ children }) => {
         modalPettyCash,
         modalPettyCashExpense,
         modalPettyCashHistory,
+        modalShareSurvey,
         changeStateModalPettyCash,
         changeStateModalUser,
         changeStateModalPettyCashExpense,
         changeStateModalPettyCashHistory,
+        changeStateModalShareSurvey,
         action,
         colors,
         colorSS,
@@ -844,6 +858,9 @@ const SurveyProvider = ({ children }) => {
         setExpenseSelected,
         expenseSelected,
         createRefill,
+        setSurveySelected,
+        surveySelected,
+        error404,
       }}
     >
       {children}

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import useSurvey from "../hooks/useSurvey";
 
 const SurveyTable = ({ surveys, handleCreateSurvey, handleDelete }) => {
-  const {userSurvey} = useSurvey()
+  const {userSurvey, roles, changeStateModalShareSurvey, setSurveySelected} = useSurvey()
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
@@ -136,7 +136,8 @@ const SurveyTable = ({ surveys, handleCreateSurvey, handleDelete }) => {
                               className="gap-1 py-2 px-3 flex items-center text-sm font-medium text-center text-white 
                           bg-emerald-400 rounded-lg hover:bg-emerald-600 focus:ring-4 focus:outline-none focus:ring-emerald-300 dark:bg-emerald-400 dark:hover:bg-emerald-600 dark:focus:ring-emerald-600"
                               onClick={() => {
-                                navigate(`/admin/survey/edit/${elm.id}`);
+                                changeStateModalShareSurvey()
+                                setSurveySelected(elm.id)
                               }}
                             >
                               <IoShareSocial />
@@ -147,7 +148,8 @@ const SurveyTable = ({ surveys, handleCreateSurvey, handleDelete }) => {
                               className="gap-1 py-2 px-3 flex items-center text-sm font-medium text-center text-white 
                           bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 dark:bg-indigo-600 dark:hover:bg-indigo-600 dark:focus:ring-indigo-700"
                               onClick={() => {
-                                navigate(`/admin/surveys/edit/${elm.id}`);
+                                navigate(
+                                  `/${roles[userSurvey.role.name]}/surveys/edit/${elm.id}`);
                               }}
                             >
                               <FiEdit />

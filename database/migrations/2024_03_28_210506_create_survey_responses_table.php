@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('survey_responses', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('survey_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('question_id');
             $table->text('response');
             $table->timestamps();
         
-            $table->foreign('survey_id')->references('id')->on('surveys')->onDelete('cascade');
+            $table->foreignUuid('survey_id')->constrained()->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');
         });

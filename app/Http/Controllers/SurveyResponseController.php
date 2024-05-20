@@ -11,13 +11,11 @@ use Illuminate\Http\Request;
 use App\Models\SurveyResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class SurveyResponseController extends Controller
 {
 
-    public function index()
-    {
-    }
 
     public function create(Request $request)
     {
@@ -27,7 +25,7 @@ class SurveyResponseController extends Controller
             DB::beginTransaction();
             // Valida los datos del request
             $validatedData = $request->validate([
-                'id' => 'required|integer',
+                'id' => 'required',
                 'user_id' => 'required|integer',
                 'questions' => 'required|array',
                 'questions.*.id' => 'required|integer',
@@ -35,6 +33,21 @@ class SurveyResponseController extends Controller
                 'has_certificate' => 'required|integer',
                 'assigned_roles' => 'nullable',
                 'comment' => 'required|string',
+            ],
+            [
+                'id.required' => 'El campo id es obligatorio.',
+                'user_id.required' => 'El campo usuario es obligatorio.',
+                'user_id.integer' => 'El campo usuario debe ser un número entero.',
+                'questions.required' => 'El campo preguntas es obligatorio.',
+                'questions.array' => 'El campo preguntas debe ser un array.',
+                'questions.*.id.required' => 'El campo id de cada pregunta es obligatorio.',
+                'questions.*.id.integer' => 'El campo id de cada pregunta debe ser un número entero.',
+                'questions.*.respondents.required' => 'El campo de respuesta de cada pregunta es obligatorio.',
+                'questions.*.respondents.array' => 'El campo de respuesta de cada pregunta debe ser un array.',
+                'has_certificate.required' => 'El campo certificado es obligatorio.',
+                'has_certificate.integer' => 'El campo certificado debe ser un número entero.',
+                'comment.required' => 'El campo comentario es obligatorio.',
+                'comment.string' => 'El campo comentario debe ser una cadena de texto.',
             ]);
 
             $user = Auth::user();
@@ -84,6 +97,7 @@ class SurveyResponseController extends Controller
             return response([
                 'message' => ['Respuestas de la encuesta almacenadas correctamente']
             ], 201);
+            
         } catch (\Exception $e) {
             DB::rollback();
             //Obtener el error

@@ -24,10 +24,13 @@ const AuthLayout = () => {
           navigate("/admin");
           break;
         case "Docente":
-          navigate("/teacher");
+          navigate("/user");
           break;
         case "Estudiante":
-          navigate("/student");
+          navigate("/user");
+          break;
+        case "Docente Asistencial":
+          navigate("/user");
           break;
         case "Administrativo":
           navigate("/administrativo");

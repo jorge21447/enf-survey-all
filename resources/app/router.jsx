@@ -1,8 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout";
-import DocenteLayout from "./layouts/DocenteLayout";
 import AdministrativoLayout from "./layouts/AdministrativoLayout";
-import EstudianteLayout from "./layouts/EstudianteLayout";
+import UserLayout from "./layouts/UserLayout";
 import Login from "./views/Login";
 import Register from "./views/Register";
 import AuthLayout from "./layouts/AuthLayout";
@@ -18,10 +17,9 @@ import SurveysParticipate from "./views/SurveysParticipate";
 import SurveyFill from "./views/SurveyFill";
 import ReportSurvey from "./views/ReportSurvey";
 import Home from "./views/Home";
-import ErrorPage from "./views/ErrorPage";
+import ErrorPage404 from "./views/ErrorPage404";
 
 import CertificatesList from "./views/CertificatesList";
-import CertificateData from "./components/CertificateData";
 import Certificates from "./views/Certificates";
 import UsersCertificate from "./components/UsersCertificate";
 import PettyCashList from "./views/PettyCashList";
@@ -33,6 +31,7 @@ import PettyCashBox from "./views/PettyCashBox";
 import ExpensesTableAdministrative from "./components/ExpensesTableAdministrative";
 import PettyCashBoxRecord from "./components/PettyCashBoxRecord";
 import RefillCreate from "./components/RefillCreate";
+import SurveySuccess from "./components/SurveySuccess";
 
 const router = createBrowserRouter([
   {
@@ -53,84 +52,40 @@ const router = createBrowserRouter([
       },
     ],
   },
-
   {
-    path: "/teacher",
-    element: <DocenteLayout />,
-    children: [
-      {
-        index: true,
-        element: <Surveys />,
-      },
-      {
-        path: "/teacher/surveys",
-        element: <Surveys />,
-      },
-      {
-        path: "/teacher/surveys/create",
-        element: <SurveyCreator />,
-      },
-      {
-        path: "/teacher/surveys/edit/:id",
-        element: <SurveyEditor />,
-      },
-      {
-        path: "/teacher/surveysList",
-        element: <SurveysParticipate />,
-      },
-      {
-        path: "/teacher/surveysList/fill/:id",
-        element: <SurveyFill />,
-      },
-      {
-        path: "/teacher/reports",
-        element: <Reports />,
-      },
-      {
-        path: "/teacher/reports/:id",
-        element: <ReportSurvey />,
-      },
-      {
-        path: "/teacher/settings",
-        element: <Settings />,
-      },
-    ],
-  },
-  {
-    path: "/student",
-    element: <EstudianteLayout />,
+    path: "/user",
+    element: <UserLayout/>,
     children: [
       {
         index: true,
         element: <SurveysParticipate />,
       },
       {
-        path: "/student/surveysList",
+        path: "/user/surveysList",
         element: <SurveysParticipate />,
       },
       {
-        path: "/student/surveysList/fill/:id",
+        path: "/user/surveysList/fill/:id",
         element: <SurveyFill />,
       },
       {
-        path: "/student/reports",
+        path: "/user/surveysList/fill/:id/success",
+        element: <SurveySuccess />,
+      },
+      {
+        path: "/user/reports",
         element: <Reports />,
       },
       {
-        path: "/student/reports/:id",
+        path: "/user/reports/:id",
         element: <ReportSurvey />,
       },
-
       {
-        path: "/student/certificatesList",
+        path: "/user/certificatesList",
         element: <CertificatesList />,
       },
       {
-        path: "/student/certificatesList/:id",
-        element: <CertificateData />,
-      },
-      {
-        path: "/student/settings",
+        path: "/user/settings",
         element: <Settings />,
       },
     ],
@@ -239,10 +194,6 @@ const router = createBrowserRouter([
         element: <UsersCertificate />,
       },
       {
-        path: "/admin/certificates/user/:id",
-        element: <CertificateData />,
-      },
-      {
         path: "/admin/surveys/create",
         element: <SurveyCreator />,
       },
@@ -290,7 +241,7 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <ErrorPage />,
+    element: <ErrorPage404 />,
   },
 ]);
 

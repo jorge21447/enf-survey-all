@@ -7,12 +7,12 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserModal from "../components/UserModal";
 import useSurvey from "../hooks/useSurvey";
-import ModalTest from "../components/ModalTest";
 import NotAuthorized from "../views/NotAuthorized";
+import ShareSurveyModal from "../components/ShareSurveyModal";
 
-const DocenteLayout = () => {
-  const { userSurvey, modalUser, changeStateModalUser } = useSurvey();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+const UserLayout = () => {
+  const { userSurvey, modalUser, changeStateModalUser, modalShareSurvey } = useSurvey();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!userSurvey || !Object.keys(userSurvey).length) {
     return <NotAuthorized />;
@@ -34,7 +34,7 @@ const DocenteLayout = () => {
 
   return (
     <>
-      {userSurvey && userSurvey.role && userSurvey.role.name === "Docente" ? (
+      {userSurvey && userSurvey.role && ["Docente", "Docente Asistencial", "Estudiante"].includes(userSurvey.role.name) ? (
         <>
           <div className="dark:bg-boxdark-2 dark:text-bodydark">
             <div className="flex h-screen overflow-hidden">
@@ -62,6 +62,10 @@ const DocenteLayout = () => {
             <UserModal />
           </Modal>
 
+          <Modal isOpen={modalShareSurvey} style={customStyles}>
+            <ShareSurveyModal />
+          </Modal>
+
           <ToastContainer />
         </>
       ) : (
@@ -71,4 +75,4 @@ const DocenteLayout = () => {
   );
 };
 
-export default DocenteLayout;
+export default UserLayout;

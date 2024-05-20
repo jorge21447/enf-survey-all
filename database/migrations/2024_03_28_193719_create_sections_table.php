@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('survey_id')->constrained()->onDelete('cascade');
+            $table->uuid('survey_id');
             $table->string('section_title');
             $table->text('section_description')->nullable();
             $table->integer('section_number');
             $table->timestamps();
+            $table->foreign('survey_id')->references('id')->on('surveys')->onDelete('cascade');
         });
     }
 

@@ -34,3 +34,44 @@ export function convertirNumeroALetras(numero) {
 
     return resultado + ` ${parteDecimal.toString().padStart(2, '0')}/100 Bs.`;
 }
+
+
+// Calcula la media (promedio) de un array de números
+export function calculateMean(numbers) {
+    if (numbers.length === 0) return 0;
+    const sum = numbers.reduce((acc, val) => acc + val, 0);
+    return sum / numbers.length;
+  }
+  
+  // Calcula la mediana de un array de números (el valor central)
+  export function calculateMedian(numbers) {
+    const sorted = numbers.slice().sort((a, b) => a - b); // Copia y ordena
+    const middle = Math.floor(sorted.length / 2);
+  
+    if (sorted.length % 2 === 0) {
+      return (sorted[middle - 1] + sorted[middle]) / 2;
+    }
+  
+    return sorted[middle];
+  }
+  
+  // Calcula la moda de un array de números (el valor más frecuente)
+  export function calculateMode(numbers) {
+    const frequency = {};
+    numbers.forEach(number => {
+      frequency[number] = (frequency[number] || 0) + 1;
+    });
+  
+    let modes = [];
+    let maxFrequency = 0;
+    for (const number in frequency) {
+      if (frequency[number] > maxFrequency) {
+        modes = [parseInt(number, 10)]; // Convierte a número
+        maxFrequency = frequency[number];
+      } else if (frequency[number] === maxFrequency) {
+        modes.push(parseInt(number, 10));
+      }
+    }
+  
+    return modes;
+  }

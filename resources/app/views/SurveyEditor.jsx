@@ -51,18 +51,29 @@ const SurveyEditor = () => {
       ? new Date(formData?.finish_date).toISOString().slice(0, 10)
       : ""
   );
-  const [style_survey, setStyle_survey] = useState(colorSS || "default");
-  const [typeSurvey, setTypeSurvey] = useState("open");
-  const [has_certificate, setHas_certificate] = useState(0);
-  const [assigned_roles, setAssigned_roles] = useState("");
+  const [style_survey, setStyle_survey] = useState(formData?.style_survey
+    ? formData.style_survey : "default");
+  const [typeSurvey, setTypeSurvey] = useState(formData?.typeSurvey
+    ? formData.typeSurvey : "open");
+  const [has_certificate, setHas_certificate] = useState(formData?.has_certificate
+    ? formData.has_certificate : 0);
+  const [assigned_roles, setAssigned_roles] = useState(formData?.assigned_roles
+    ? formData.assigned_roles : "4");
 
   const navigate = useNavigate();
+
+  console.log('Aqui esta ', formData)
 
   useEffect(() => {
     setIsLoading(true);
     const surveyID = async (id) => {
       const resultado = await getSurveyID(id);
       if (resultado) {
+        setDateFinish(resultado.finish_date ? new Date(resultado?.finish_date).toISOString().slice(0, 10) : "");
+        setStyle_survey(resultado.style_survey);
+        setTypeSurvey(resultado.typeSurvey);
+        setHas_certificate(resultado.has_certificate);
+        setAssigned_roles(resultado.assigned_roles ? resultado.assigned_roles[0] ? resultado.assigned_roles[0] : "" : "")
         setIsLoading(false);
       }
     };
@@ -76,7 +87,7 @@ const SurveyEditor = () => {
   const handleReturn = (e) => {
     e.preventDefault();
 
-    navigate("/admin/surveys/");
+    navigate(`/${roles[userSurvey.role.name]}/surveys`);
   };
 
   const handleSubmitSurvey = async (e) => {
@@ -95,6 +106,11 @@ const SurveyEditor = () => {
       const resultado = await editSurvey({
         ...formData,
         questions: [...questions],
+        typeSurvey: typeSurvey,
+        style_survey: style_survey,
+        finish_date: dateFinish,
+        has_certificate: has_certificate,
+        assigned_roles: assigned_roles,
       });
       if (resultado) {
         navigate(`/${roles[userSurvey.role.name]}/surveys`);
@@ -150,7 +166,7 @@ const SurveyEditor = () => {
                 questions={questions}
                 action={action}
                 colors={colors}
-                colorSS={colorSS}
+                colorSS={style_survey}
                 onHeadFormInputChange={onHeadFormInputChange}
                 hasEditAccess={hasEditAccess}
                 onDragEnd={onDragEnd}
@@ -167,10 +183,10 @@ const SurveyEditor = () => {
             <QuestionConfiguration
               formData={formData}
               dateFinish={dateFinish}
-              style_survey={style_survey}
-              typeSurvey={typeSurvey}
               setDateFinish={setDateFinish}
+              style_survey={style_survey}
               setStyle_survey={setStyle_survey}
+              typeSurvey={typeSurvey}
               setTypeSurvey={setTypeSurvey}
               has_certificate={has_certificate}
               setHas_certificate={setHas_certificate}

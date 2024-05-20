@@ -50,12 +50,8 @@ export const useAuth = () => {
             if (data.user.role.name == 'Administrativo') {
                 navigate('/administrativo')
             }
-            if (data.user.role.name == 'Docente') {
-                navigate('/teacher')
-            }
-
-            if (data.user.role.name == 'Estudiante') {
-                navigate('/student')
+            if (data.user.role.name == 'Docente' || data.user.role.name == 'Docente Asistencial' || data.user.role.name == 'Estudiante') {
+                navigate('/user')
             }
 
 
@@ -88,11 +84,8 @@ export const useAuth = () => {
                 if (data.user.role.name == 'Administrativo') {
                     navigate('/administrativo')
                 }
-                if (data.user.role.name == 'Docente') {
-                    navigate('/teacher')
-                }
-                if (data.user.role.name == 'Estudiante') {
-                    navigate('/student')
+                if (data.user.role.name == 'Docente' || data.user.role.name == 'Docente Asistencial' || data.user.role.name == 'Estudiante') {
+                    navigate('/user')
                 }
             }, 3000); // Cambiar el tiempo según sea necesario
         } catch (error) {

@@ -8,9 +8,10 @@ use App\Models\Option;
 use App\Models\Survey;
 use App\Models\Section;
 use App\Models\Question;
-use App\Models\SurveyAssignment;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\SurveyResponse;
+use App\Models\SurveyAssignment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,8 +43,8 @@ class SurveyController extends Controller
             $survey = Survey::with('sections.questions.options', 'user', 'responses')->orderBy('creation_date', 'desc')->get();
             return response()->json($survey);
         }
-        if ($user->role_id == '3' || $user->role_id == '4') {
-            // Si el usuario es administrador (role_id = 1) o docente (role_id = 3)
+        if ($user->role_id == '3' || $user->role_id == '4' || $user->role_id == '5') {
+            // Si el usuario es estudiante (role_id = 4) o docente  asistencial (role_id = 3)
             $openSurveys = Survey::with('sections.questions.options', 'user', 'responses')
                 ->where('typeSurvey', 'open')
                 ->orderBy('creation_date', 'desc')
@@ -74,10 +75,34 @@ class SurveyController extends Controller
 
             $user = Auth::user();
 
+            $dataValidate = $request->validate(
+                [
+                    'title' => 'required|string',
+                    'typeSurvey' => 'required|string',
+                    'questions' => 'required|array',
+                    'questions.*.questionTitle' => 'required|string',
+                    'questions.*.type' => 'required|string',
+                    'questions.*.options' => 'array',
+                    'questions.*.options.*' => 'string',
+                    'assigned_roles' => 'nullable|exists:roles,id',
+                ],
+                [
+                    'title.required' => 'El título de la encuesta es requerido',
+                    'typeSurvey.required' => 'El tipo de encuesta es requerido',
+                    'questions.required' => 'Las preguntas de la encuesta son requeridas',
+                    'questions.*.questionTitle.required' => 'El título de la pregunta es requerido',
+                    'questions.*.type.required' => 'El tipo de pregunta es requerido',
+                    'questions.*.options.array' => 'Las opciones de la pregunta deben ser un arreglo',
+                    'questions.*.options.*.string' => 'Las opciones de la pregunta no pueden ser nulas',
+                    'assigned_roles.exists' => 'El rol asignado no existe',
+                ]
+            );
+
             $data = $request->all();
 
             // Paso 1: Crear la encuesta
             $survey = Survey::create([
+                'id' => Str::uuid(),
                 'user_id' => $user->id,
                 'title' => $data['title'],
                 'description' => $data['description'] ?? null,
@@ -137,7 +162,7 @@ class SurveyController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             //Obtener el error
-            // return response(['errors' => ['Ocurrio algo inesperado con el servidor', $e->getMessage()]], 422);
+            return response(['errors' => ['Ocurrio algo inesperado con el servidor', $e->getMessage()]], 422);
             return response([
                 'errors' => ['Ocurrio algo inesperado con el servidor']
             ], 422);
@@ -172,7 +197,7 @@ class SurveyController extends Controller
             'style_survey' => $survey->style_survey,
             'has_certificate' => $survey->has_certificate,
             'questions' => [],
-            'assigned_roles' => $survey->typeSurvey === 'closed' ? $survey->assignments->pluck('name') : null, // Agregar roles asignados solo si la encuesta es de tipo "closed"
+            'assigned_roles' => $survey->typeSurvey === 'closed' ? $survey->assignments->pluck('role_id') : null, // Agregar roles asignados solo si la encuesta es de tipo "closed"
             'comments' => $survey->comments->pluck('content')->toArray(),
         ];
 
@@ -290,12 +315,39 @@ class SurveyController extends Controller
             ], 404);
         }
         try {
+
+            $dataValidate = $request->validate(
+                [
+                    'title' => 'required|string',
+                    'typeSurvey' => 'required|string',
+                    'questions' => 'required|array',
+                    'questions.*.questionTitle' => 'required|string',
+                    'questions.*.type' => 'required|string',
+                    'questions.*.require' => 'required|boolean',
+                    'questions.*.options' => 'array',
+                    'questions.*.options.*' => 'string',
+                    'assigned_roles' => 'nullable|exists:roles,id',
+                ],
+                [
+                    'title.required' => 'El título de la encuesta es requerido',
+                    'typeSurvey.required' => 'El tipo de encuesta es requerido',
+                    'questions.required' => 'Las preguntas de la encuesta son requeridas',
+                    'questions.*.questionTitle.required' => 'El título de la pregunta es requerido',
+                    'questions.*.type.required' => 'El tipo de pregunta es requerido',
+                    'questions.*.require.required' => 'El campo de requerido es requerido',
+                    'questions.*.options.array' => 'Las opciones de la pregunta deben ser un arreglo',
+                    'questions.*.options.*.string' => 'Las opciones de la pregunta no pueden ser nulas',
+                    'assigned_roles.exists' => 'El rol asignado no existe',
+                ]
+            );
+            
             $survey->update([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
                 'finish_date' => $request->input('finish_date'),
                 'style_survey' => $request->input('style_survey'),
                 'typeSurvey' => $request->input('typeSurvey'),
+                'has_certificate' => $request->input('has_certificate'),
             ]);
 
             $section = Section::where('survey_id', $survey->id)->first();
@@ -346,8 +398,11 @@ class SurveyController extends Controller
 
                 // Actualiza o crea la asignación de rol para la encuesta
                 $surveyRole = SurveyAssignment::updateOrCreate(
-                    ['survey_id' => $survey->id],
-                    ['role_id' => $roleId]
+                    [
+                        'survey_id' => $survey->id,
+                        'role_id' => $roleId,
+                        'assigned_at' => Carbon::now()
+                    ],
                 );
 
                 // Elimina las asignaciones de roles que no coinciden con el role_id proporcionado

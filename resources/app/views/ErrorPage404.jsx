@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const ErrorPage = () => {
+const ErrorPage404 = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-blue-700 dark:bg-gray-900 dark:from-gray-800 dark:to-gray-900">
       <h1 className="text-5xl md:text-7xl font-bold text-white dark:text-gray-200 mb-10 text-center">
@@ -22,4 +22,4 @@ const ErrorPage = () => {
   );
 };
 
-export default ErrorPage;
+export default ErrorPage404;

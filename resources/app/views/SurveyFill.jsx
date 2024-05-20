@@ -6,7 +6,7 @@ import Loader from "../components/Loader";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 import { BsFillSendFill } from "react-icons/bs";
 import { RiDeleteBin2Fill } from "react-icons/ri";
-import SurveyError from "../components/SurveyError";
+import ErrorPage from "../components/ErrorPage";
 import CommentInput from "../components/CommentInput";
 
 const SurveyFill = () => {
@@ -25,6 +25,7 @@ const SurveyFill = () => {
     submitSurveyResponses,
     userSurvey,
     roles,
+    error404,
   } = useSurvey();
 
   const { id } = useParams();
@@ -63,10 +64,10 @@ const SurveyFill = () => {
       assigned_roles: formData.assigned_roles
         ? formData.assigned_roles[0]
         : null,
-      comment: comment
+      comment: comment,
     });
     if (resultado) {
-      navigate(`/${roles[userSurvey.role.name]}/surveysList`);
+      navigate(`/${roles[userSurvey.role.name]}/surveysList/fill/${id}/success`);
     }
   };
   if (
@@ -74,14 +75,33 @@ const SurveyFill = () => {
     formData.typeSurvey == "closed" &&
     formData.assigned_roles[0] != userSurvey.role_id
   ) {
-    return <SurveyError />;
+    return (
+      <ErrorPage
+        title="Error de Encuesta"
+        message="No puedes responder esta encuesta."
+      />
+    );
   }
   if (!isLoading && formData.finish_date != null) {
     const currentDate = new Date();
     const finishDate = new Date(formData.finish_date);
     if (currentDate > finishDate) {
-      return <SurveyError />;
+      return (
+        <ErrorPage
+          title="Error de Encuesta"
+          message="No puedes responder esta encuesta."
+        />
+      );
     }
+  }
+
+  if (error404) {
+    return (
+      <ErrorPage
+        title="Encuesta no encontrada"
+        message="La encuesta que buscas no existe o ha sido eliminada."
+      />
+    );
   }
 
   return (
@@ -95,7 +115,7 @@ const SurveyFill = () => {
             questions={questions}
             action={action}
             colors={colors}
-            colorSS={colorSS}
+            colorSS={formData?.style_survey ? formData.style_survey : colorSS}
             onHeadFormInputChange={onHeadFormInputChange}
             hasEditAccess={false}
             onDragEnd={onDragEnd}
@@ -111,11 +131,12 @@ const SurveyFill = () => {
                 <div className="mb-4">
                   <div
                     className={`
-                      rounded-3xl border-l-[40px] bg-white  text- px-6 pb-4 shadow ${border} shadow dark:bg-gray-500`}
+                      rounded-3xl border-l-[40px] bg-white  text- px-6 pb-4 shadow ${colors[formData?.style_survey ? formData.style_survey : colorSS].border} shadow dark:bg-gray-500`}
                   >
                     <div className="mb-2">
                       <h3 className="font-semibold font-mont p-2  pt-6 pb-4">
-                        Escribe tu Comentario/Recomendación <span className="text-red-500">*</span>
+                        Escribe tu Comentario/Recomendación{" "}
+                        <span className="text-red-500">*</span>
                       </h3>
                       <CommentInput
                         handleComment={handleComment}

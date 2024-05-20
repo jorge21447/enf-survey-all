@@ -9,6 +9,7 @@ import UserModal from "../components/UserModal";
 import useSurvey from "../hooks/useSurvey";
 import NotAuthorized from "../views/NotAuthorized";
 import PettyCashBoxExpenseModal from "../components/PettyCashBoxExpenseModal";
+import ShareSurveyModal from "../components/ShareSurveyModal";
 
 const AdministrativoLayout = () => {
   const {
@@ -16,9 +17,10 @@ const AdministrativoLayout = () => {
     modalUser,
     modalPettyCashExpense,
     modalPettyCashHistory,
+    modalShareSurvey,
   } = useSurvey();
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!userSurvey || !Object.keys(userSurvey).length) {
     return <NotAuthorized />;
@@ -91,6 +93,10 @@ const AdministrativoLayout = () => {
 
           <Modal isOpen={modalPettyCashHistory} style={customStyles2}>
             <PettyCashBoxExpenseModal />
+          </Modal>
+
+          <Modal isOpen={modalShareSurvey} style={customStyles}>
+            <ShareSurveyModal />
           </Modal>
 
           <ToastContainer />

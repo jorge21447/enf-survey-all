@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useRef } from "react";
-import { NavLink, useLocation } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 import CryptoJS from "crypto-js";
+
 // React icons
 import { RiMenuLine } from "react-icons/ri";
 
@@ -11,25 +12,37 @@ import { BiHomeAlt2 } from "react-icons/bi";
 import { RiSurveyLine } from "react-icons/ri";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { AiOutlineSetting } from "react-icons/ai";
-import { TbReportMoney } from "react-icons/tb";
+import { PiCertificate } from "react-icons/pi";
 import { TbUserCircle } from "react-icons/tb";
+import { TbReportMoney } from "react-icons/tb";
+
 // Img
 import LogoIcon from "../assets/logo-enf.png";
-import { PiCertificate } from "react-icons/pi";
 
-const Sidebar = () => {
-  const [open, setOpen] = useState(false);
-
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const { logout } = useAuth();
   const [storedUser, setStoreUser] = useState({});
+  const trigger = useRef(null);
+  const sidebar = useRef(null);
+  const storedSidebarExpanded = localStorage.getItem("sidebar-expanded");
+  const [sidebarExpanded, setSidebarExpanded] = useState(
+    storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
+  );
+  useEffect(() => {
+    const clickHandler = ({ target }) => {
+      if (!sidebar.current || !trigger.current) return;
+      if (
+        !sidebarOpen ||
+        sidebar.current.contains(target) ||
+        trigger.current.contains(target)
+      )
+        return;
+      setSidebarOpen(false);
+    };
+    document.addEventListener("click", clickHandler);
+    return () => document.removeEventListener("click", clickHandler);
+  });
 
-  const sidebarRef = useRef();
-  const { pathname } = useLocation();
-
-  const handleResize = () => {
-    const isTabletMid = window.innerWidth <= 768;
-    setOpen(isTabletMid ? false : true); // Adjust for smaller screens
-  };
   useEffect(() => {
     if (localStorage.getItem("user")) {
       const informacionDesencriptada = CryptoJS.AES.decrypt(
@@ -40,65 +53,75 @@ const Sidebar = () => {
       setStoreUser(JSON.parse(usuarioJSON));
     }
   }, []);
-
+  // close if the esc key is pressed
   useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
+    const keyHandler = ({ keyCode }) => {
+      if (!sidebarOpen || keyCode !== 27) return;
+      setSidebarOpen(false);
     };
-  }, []);
+    document.addEventListener("keydown", keyHandler);
+    return () => document.removeEventListener("keydown", keyHandler);
+  });
 
   useEffect(() => {
-    if (window.innerWidth <= 768) {
-      setOpen(false); // Close sidebar on route change in smaller screens
+    localStorage.setItem("sidebar-expanded", sidebarExpanded);
+    if (sidebarExpanded) {
+      document.querySelector("body").classList.add("sidebar-expanded");
+    } else {
+      document.querySelector("body").classList.remove("sidebar-expanded");
     }
-  }, [pathname]);
+  }, [sidebarExpanded]);
 
   return (
     <div>
       <div
-        onClick={() => setOpen(false)}
-        className={`md:hidden  inset-0 max-h-screen z-[50] bg-black/50 ${
-          open ? "block" : "hidden"
-        } `}
+        className={`fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${
+          sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        aria-hidden="true"
       ></div>
       <div
-        ref={sidebarRef}
-        className=" bg-white dark:bg-[#182235]  border-b border-slate-200 dark:border-slate-700 text-gray shadow-xl z-[51] max-w-[20rem]  w-[16rem] overflow-hidden md:relative  h-full "
-        style={{
-          width: open ? "20rem" : "4rem",
-        }}
+        ref={sidebar}
+        className={` bg-white dark:bg-[#182235]  border-b border-slate-200 dark:border-slate-700 text-gray shadow-xl    h-full 
+        transition-all duration-200 ease-in-out  flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 overflow-y-scroll lg:overflow-y-auto no-scrollbar w-72 lg:w-16 lg:sidebar-expanded:!w-72 2xl:!w-72 shrink-0  ${
+          sidebarExpanded ? "lg:w-64" : "lg:w-16"
+        }  ${sidebarOpen ? "translate-x-0" : "-translate-x-72"}`}
       >
-        <div className=" max-h-16 h-full flex items-center align-middle gap-2.5  whitespace-pre  font-medium border-b border-slate-300  mx-3 dark:border-slate-500">
-          {open && (
-            <>
-              <div className="flex gap-2.5  whitespace-pre ">
-                <img src={LogoIcon} alt="Logo" className=" w-9" />
-                <div className="my-auto">
-                  <p className="text-sm font-bold leading-none pt-1 uppercase">
-                    Carrera de Enfermería
-                  </p>
+        {/* Header del sidebar */}
 
-                  <small>Sistema de Encuestas</small>
-                </div>
+        <div className=" max-h-16 h-full flex items-center align-middle gap-2.5  whitespace-pre  font-medium border-b border-slate-300  mx-3 dark:border-slate-500">
+          <div className="flex gap-2">
+            <div className="flex gap-2.5  whitespace-pre ">
+              <img src={LogoIcon} alt="Logo" className=" w-9" />
+              <div
+                className={`my-auto block  2xl:block ${
+                  sidebarExpanded ? "" : "lg:hidden"
+                }`}
+              >
+                <p className="text-sm font-bold  leading-none pt-1 uppercase">
+                  Carrera de Enfermería
+                </p>
+
+                <small>Sistema de Encuestas</small>
               </div>
-            </>
-          )}
-          <div
-            onClick={() => {
-              setOpen(!open);
-            }}
-            className="m-auto z-50  pb-1 cursor-pointer"
-          >
-            <RiMenuLine size={20} />
+            </div>
+            
+            <button
+              ref={trigger}
+              className="lg:hidden text-slate-500 hover:text-slate-400"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-controls="sidebar"
+              aria-expanded={sidebarOpen}
+            >
+              <RiMenuLine size={25} />
+            </button>
+            
           </div>
         </div>
 
         <div className="flex flex-col  h-full">
-          <ul className="whitespace-pre px-2.5 text-[0.9rem] py-5 flex flex-col gap-1  font-medium overflow-x-hidden   md:h-[68%] h-[70%]">
-            {storedUser && storedUser?.role?.name == "Administrador" ? (
+          <ul className="whitespace-pre px-2.5 text-[0.9rem] py-5 flex flex-col gap-1  font-medium overflow-x-hidden   ]">
+          {storedUser && storedUser?.role?.name == "Administrador" ? (
               <>
                 <li>
                   <NavLink
@@ -344,22 +367,41 @@ const Sidebar = () => {
               ""
             )}
           </ul>
-
-          {open && (
-            <div className="flex text-sm z-50   my-auto  whitespace-pre   w-full    ">
-              <div className="flex border-y w-full border-slate-300  items-center px-2.5">
-                <button
-                  type="button"
-                  className="flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium w-full  bg-white dark:bg-[#182235] dark:text-white dark:hover:bg-red-500 p-3  text-black hover:bg-red-500  hover:text-white hover:font-bold"
-                  onClick={logout}
-                >
-                  {" "}
-                  <IoLogOutOutline size={23} className="" />
-                  Cerrar Sesion
-                </button>
-              </div>
-            </div>
-          )}
+        </div>
+        {/* Expand / collapse button */}
+        <div className="pt-3 hidden lg:inline-flex 2xl:hidden justify-end mt-auto">
+          <div className="px-5 py-2">
+            <button onClick={() => setSidebarExpanded(!sidebarExpanded)}>
+              <span className="sr-only">Expand / collapse sidebar</span>
+              <svg
+                className={`${
+                  sidebarExpanded ? "rotate-180" : ""
+                } w-6 h-6 fill-current sidebar-expanded:rotate-180`}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  className="text-slate-400"
+                  d="M19.586 11l-5-5L16 4.586 23.414 12 16 19.414 14.586 18l5-5H7v-2z"
+                />
+                <path className="text-slate-600" d="M3 23H1V1h2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div className="flex text-sm z-50    whitespace-pre   w-full  py-5 justify-end ">
+          <div className="flex border-y w-full border-slate-300  items-center px-2.5">
+            <button
+              type="button"
+              className="flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium w-full  bg-white dark:bg-[#182235] dark:text-white dark:hover:bg-red-500 p-3  text-black hover:bg-red-500  hover:text-white hover:font-bold"
+              onClick={logout}
+            >
+              {" "}
+              <IoLogOutOutline size={23} className="" />
+              <p className={`${sidebarExpanded ? "" : "lg:hidden"} 2xl:block`}>
+                Cerrar Sesion
+              </p>
+            </button>
+          </div>
         </div>
       </div>
     </div>

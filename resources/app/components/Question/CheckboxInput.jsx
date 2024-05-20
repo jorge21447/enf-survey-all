@@ -60,7 +60,7 @@ const CheckboxInput = ({
           <div className="flex items-center space-x-3">
             <input className="h-5 w-5" disabled type="checkbox" />
             <button
-              className="border-b border-white bg-white py-2 text-gray-400 hover:border-gray-300 focus:border-b-2 focus:border-purple-700"
+              className="border-b border-white bg-white py-2 dark:bg-slate-600 rounded-lg px-4  text-gray-400 hover:border-gray-300 focus:border-b-2 focus:border-teal-700 "
               onClick={addOption}
               type="button"
             >

@@ -101,7 +101,7 @@ const PettyCashBoxRecord = () => {
     
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("PettyCashBox");
+    const worksheet = workbook.addWorksheet("Hoja 1");
 
     // Agregar la imagen (solo si imageData está disponible)
     if (imageData) {

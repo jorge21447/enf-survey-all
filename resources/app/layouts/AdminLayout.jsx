@@ -10,17 +10,17 @@ import useSurvey from "../hooks/useSurvey";
 import NotAuthorized from "../views/NotAuthorized";
 import PettyCashModal from "../components/PettyCashModal";
 import PettyCashBoxExpenseModal from "../components/PettyCashBoxExpenseModal";
+import ShareSurveyModal from "../components/ShareSurveyModal";
 
 const AdminLayout = () => {
   const { 
     userSurvey, 
     modalUser, 
-    changeStateModalUser,
     modalPettyCash,
-    changeStateModalPettyCash,
-    modalPettyCashExpense
+    modalPettyCashExpense,
+    modalShareSurvey,
  } = useSurvey();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (!Boolean(localStorage.getItem("user"))) {
     return <NotAuthorized />;
@@ -91,6 +91,10 @@ const AdminLayout = () => {
 
         <Modal isOpen={modalPettyCashExpense} style={customStyles2}>
             <PettyCashBoxExpenseModal />
+          </Modal>
+
+          <Modal isOpen={modalShareSurvey} style={customStyles}>
+            <ShareSurveyModal />
           </Modal>
 
         <ToastContainer />

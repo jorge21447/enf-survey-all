@@ -14,13 +14,12 @@ return new class extends Migration
         Schema::create('certificates', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('survey_id');
             $table->string('type')->nullable();
             $table->timestamps();
 
             // Claves foráneas
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('survey_id')->references('id')->on('surveys')->onDelete('cascade');
+            $table->foreignUuid('survey_id')->constrained()->onDelete('cascade');
         });
     }
 

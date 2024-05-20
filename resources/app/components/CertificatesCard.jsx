@@ -46,7 +46,7 @@ const CertificatesCard = ({ data }) => {
             }}
             disabled={true}
           >
-            Obtener en Direccion
+            Obtener en Dirección
           </button>
         </div>
       </div>

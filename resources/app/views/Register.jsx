@@ -2,7 +2,6 @@ import { createRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Alerta from "../components/Alerta";
 import { useAuth } from "../hooks/useAuth";
-import CustomGradientWaveSVG from "../components/CustomGradientWaveSVG";
 
 const Register = () => {
   const { register } = useAuth();
