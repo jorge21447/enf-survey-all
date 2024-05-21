@@ -45,7 +45,8 @@ class UserController extends Controller
                     PasswordRules::min(8)->letters()->symbols()->numbers()
                 ],
                 'role_id' => ['required', 'exists:roles,id'],
-                'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'photo_profile' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'], 
+                'ci' => ['required', 'string', 'unique:users,ci'],
             ],
             [
                 'name.required' => 'El nombre es obligatorio',
@@ -57,7 +58,9 @@ class UserController extends Controller
                 'role_id.exists' => 'El Rol ID no es válido',
                 'photo_profile.image' => 'La foto del perfil debe ser una imagen. ',
                 'photo_profile.mimes' => 'La foto del perfil debe ser un archivo de tipo: JPEG, PNG, JPG, GIF. ',
-                'photo_profile.max' => 'El archivo no debe superar los 2048 kB.'
+                'photo_profile.max' => 'El archivo no debe superar los 2048 kB.',
+                'ci.required' => 'El CI es obligatorio',
+                'ci.unique' => 'El CI ya se encuentra registrado',
             ]
         );
 
@@ -75,6 +78,7 @@ class UserController extends Controller
                 'photo_profile' => $data['photo_profile'] ?? null,
                 'date_of_birth' => $data['date_of_birth'] ?? null,
                 'is_active' => $data['is_active'] ?? true,
+                'ci' => $data['ci'],
             ]);
 
             if ($request->hasFile('photo_profile')) {
@@ -133,6 +137,7 @@ class UserController extends Controller
             [
                 'name' => ['required', 'string'],
                 'email' => ['required', 'email', 'unique:users,email,' . $id],
+                'ci' => ['required', 'string', 'unique:users,ci,' . $id],
                 'role_id' => ['required', 'exists:roles,id'],
                 'password' => ['nullable', 'confirmed', PasswordRules::min(8)->letters()->symbols()->numbers()],
                 'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
@@ -148,19 +153,19 @@ class UserController extends Controller
                 'password.confirmed' => 'Las contraseñas deben coincidir.',
                 'photo_profile.image' => 'La foto del perfil debe ser una imagen. ',
                 'photo_profile.mimes' => 'La foto del perfil debe ser un archivo de tipo: JPEG, PNG, JPG, GIF. ',
-                'photo_profile.max' => 'El archivo no debe superar los 2048 kB. '
+                'photo_profile.max' => 'El archivo no debe superar los 2048 kB. ',
+                'ci.required' => 'El CI es obligatorio',
+                'ci.unique' => 'El CI ya se encuentra registrado',
+
             ]
         );
 
 
         try {
-            // Solo si el Request solicita Password
-            //$user->password = Hash::make($request->password);
-
             $user->name = $request->name;
             $user->email = $request->email;
             $user->role_id = $request->role_id;
-
+            $user->ci = $request->ci;
 
             // Verificar si 'is_active' está presente en la solicitud
 
@@ -185,7 +190,8 @@ class UserController extends Controller
                 $user->photo_profile = $photoProfilePath;
             };
 
-
+            // Solo si el Request solicita Password
+            //$user->password = Hash::make($request->password);
             if ($request->password) {
                 $user->password = Hash::make($request->password);
             };

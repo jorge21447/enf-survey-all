@@ -22,6 +22,7 @@ const Settings = () => {
   const [photo_profile, setPhoto_profile] = useState("");
   const [date_of_birth, setDate_of_birth] = useState("");
   const [is_active, setIs_active] = useState(1);
+  const [ci, setCi] = useState("");
   const [changePassword, setChangePassword] = useState(false);
 
   const token = localStorage.getItem("AUTH_TOKEN");
@@ -49,6 +50,7 @@ const Settings = () => {
     formData.append("is_active", is_active);
     formData.append("photo_profile", photo_profile);
     formData.append("id", userSurvey.id);
+    formData.append("ci", ci);
 
     if (changePassword) {
       formData.append("password_confirmation", password_confirmation);
@@ -81,6 +83,7 @@ const Settings = () => {
       setRole_id(data.user.role_id);
       setDate_of_birth(data.user.date_of_birth || "");
       setIs_active(data.user.is_active ? 1 : 0);
+      setCi(data.user.ci || "");
       //setPhoto_profile(data.user.photo_profile || '');
     }
   }, [isLoading, data]);
@@ -142,9 +145,27 @@ const Settings = () => {
                     >
                       <option value={1}>Administrador</option>
                       <option value={2}>Administrativo</option>
-                      <option value={3}>Docente</option>
-                      <option value={4}>Estudiante</option>
+                      <option value={3}>Docente Asistencial</option>
+                      <option value={4}>Docente</option>
+                      <option value={5}>Estudiante</option>
                     </select>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="ci"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      CI
+                    </label>
+                    <input
+                      type="text"
+                      name="ci"
+                      id="ci"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      placeholder="789456"
+                      value={ci}
+                      onChange={(e) => setCi(e.target.value)}
+                    />
                   </div>
                   <div>
                     <label
@@ -198,7 +219,7 @@ const Settings = () => {
                       <option value={0}>No activo</option>
                     </select>
                   </div>
-                  <div>
+                  <div className="sm:col-span-2">
                     <label
                       htmlFor="photo_profile"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"

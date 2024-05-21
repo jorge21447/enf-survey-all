@@ -14,12 +14,12 @@ const UserModal = () => {
   const is_activeRef = createRef();
   const photo_profileRef = createRef();
   const passwordRef = createRef();
+  const ciRef = createRef();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setErrores([]);
-
 
     const formData = new FormData();
 
@@ -30,6 +30,7 @@ const UserModal = () => {
     formData.append("date_of_birth", date_of_birthRef.current.value);
     formData.append("is_active", is_activeRef.current.value);
     formData.append("password", passwordRef.current.value);
+    formData.append("ci", ciRef.current.value);
 
     // Si photo_profile es un archivo, agrega el archivo al FormData
     if (photo_profileRef.current.files.length > 0) {
@@ -102,9 +103,26 @@ const UserModal = () => {
                   >
                     <option value={1}>Administrador</option>
                     <option value={2}>Administrativo</option>
-                    <option value={3}>Docente</option>
-                    <option value={4}>Estudiante</option>
+                    <option value={3}>Docente Asistencial</option>
+                    <option value={4}>Docente</option>
+                    <option value={5}>Estudiante</option>
                   </select>
+                </div>
+                <div>
+                  <label
+                    htmlFor="ci"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    CI
+                  </label>
+                  <input
+                    type="text"
+                    name="ci"
+                    id="ci"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    placeholder="789456"
+                    ref={ciRef}
+                  />
                 </div>
                 <div>
                   <label
@@ -170,7 +188,7 @@ const UserModal = () => {
                     <option value={0}>No activo</option>
                   </select>
                 </div>
-                <div className="sm:col-span-2">
+                <div className="">
                   <label
                     htmlFor="photo_profile"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"

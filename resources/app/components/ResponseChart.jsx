@@ -1,18 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Bar, Pie, Doughnut, PolarArea, Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { CSVLink } from "react-csv";
 import { MdExpandMore, MdExpandLess } from "react-icons/md";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const ResponseChart = ({ formData, questions }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-
   const navigate = useNavigate();
   const [chartTypes, setChartTypes] = useState({}); // Estado para los tipos de gráfico por pregunta
   const [visibleResponses, setVisibleResponses] = useState({});
   const [questionsWithStats, setQuestionsWithStats] = useState([]);
+  const componentRef = useRef();
 
   const toggleResponses = (questionId) => {
     setVisibleResponses((prevState) => ({
@@ -38,25 +40,25 @@ const ResponseChart = ({ formData, questions }) => {
     plugins: {
       legend: {
         labels: {
-          color: isDarkMode ? '#ffffff' : '#000000', // Text color
+          color: isDarkMode ? "#ffffff" : "#000000", // Text color
         },
       },
     },
     scales: {
       x: {
         ticks: {
-          color: isDarkMode ? '#ffffff' : '#000000', // X-axis text color
+          color: isDarkMode ? "#ffffff" : "#000000", // X-axis text color
         },
         grid: {
-          color: isDarkMode ? '#444444' : '#dddddd', // X-axis grid color
+          color: isDarkMode ? "#444444" : "#dddddd", // X-axis grid color
         },
       },
       y: {
         ticks: {
-          color: isDarkMode ? '#ffffff' : '#000000', // Y-axis text color
+          color: isDarkMode ? "#ffffff" : "#000000", // Y-axis text color
         },
         grid: {
-          color: isDarkMode ? '#444444' : '#dddddd', // Y-axis grid color
+          color: isDarkMode ? "#444444" : "#dddddd", // Y-axis grid color
         },
       },
     },
@@ -96,15 +98,15 @@ const ResponseChart = ({ formData, questions }) => {
 
     switch (chartType) {
       case "pie":
-        return <Pie data={data} options={chartOptions}/>;
+        return <Pie data={data} options={chartOptions} />;
       case "doughnut":
-        return <Doughnut data={data} options={chartOptions}/>;
+        return <Doughnut data={data} options={chartOptions} />;
       case "polarArea":
-        return <PolarArea data={data} options={chartOptions}/>;
+        return <PolarArea data={data} options={chartOptions} />;
       case "line":
-        return <Line data={data} options={chartOptions}/>;
+        return <Line data={data} options={chartOptions} />;
       default:
-        return <Bar data={data} options={chartOptions}/>;
+        return <Bar data={data} options={chartOptions} />;
     }
   };
 
@@ -134,7 +136,6 @@ const ResponseChart = ({ formData, questions }) => {
     }
     return { csvData, headers };
   };
-
 
   const calculateStatisticsForQuestion = (question) => {
     if (["radio", "checkbox", "boolean"].includes(question.type)) {
@@ -169,17 +170,54 @@ const ResponseChart = ({ formData, questions }) => {
     return null;
   };
 
-  
+  const handleDownloadPdf = async () => {
+    const noPrintElements = document.querySelectorAll(".no-print");
+    noPrintElements.forEach((el) => el.classList.add("hidden"));
+
+    const divToPrint = componentRef.current;
+    window.scrollTo(0, 0);
+
+      const canvas = await html2canvas(divToPrint, {
+        scale: 2,
+        backgroundColor: isDarkMode ? "#1f2937" : "#ffffff",
+      });
+      canvas.willReadFrequently = true;
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.setFillColor(isDarkMode ? "#1f2937": "#ffffff");
+        pdf.rect(0, 0, pdfWidth, pdfHeight, "F");
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+
+      pdf.save("download.pdf");
+
+      noPrintElements.forEach((el) => el.classList.remove("hidden"));
+  };
+
   useEffect(() => {
     const handleThemeChange = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
     };
 
     handleThemeChange(); // Set initial theme
-    window.addEventListener('change', handleThemeChange);
+    window.addEventListener("change", handleThemeChange);
 
     return () => {
-      window.removeEventListener('change', handleThemeChange);
+      window.removeEventListener("change", handleThemeChange);
     };
   }, []);
 
@@ -197,13 +235,17 @@ const ResponseChart = ({ formData, questions }) => {
   return (
     <div className="md:py-6">
       <div className="bg-gray-50 dark:bg-gray-900 p-4 md:p-0 w-full sm:py-2 antialiased">
-        <div className="mx-auto md:w-5/6 w-full">
+        <div
+          className="mx-auto md:w-5/6 w-full"
+          ref={componentRef}
+          id="divToPrint"
+        >
           <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
             <div className="space-y-6">
               <div className="flex-1 flex gap-4 items-center p-6 pb-4">
                 <button
                   type="button"
-                  className="gap-1 flex items-center justify-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-violet-300 font-medium rounded-full text-sm px-2 py-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-violet-800 "
+                  className="no-print gap-1 flex items-center justify-center text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-violet-300 font-medium rounded-full text-sm px-2 py-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-violet-800 "
                   onClick={handleReturn}
                 >
                   <MdArrowBackIosNew size={20} />
@@ -229,10 +271,16 @@ const ResponseChart = ({ formData, questions }) => {
                       headers={headers}
                       filename={`survey_${formData.id}.csv`}
                       separator=";"
-                      className="gap-1 flex items-center justify-center text-white bg-violet-700 hover:bg-violet-800 focus:ring-4 focus:ring-violet-300 font-medium rounded-xl text-sm px-4 py-2 dark:bg-violet-600 dark:hover:bg-violet-700 focus:outline-none dark:focus:ring-violet-800"
+                      className="no-print gap-1 flex items-center justify-center text-white bg-violet-700 hover:bg-violet-800 focus:ring-4 focus:ring-violet-300 font-medium rounded-xl text-sm px-4 py-2 dark:bg-violet-600 dark:hover:bg-violet-700 focus:outline-none dark:focus:ring-violet-800"
                     >
                       Exportar CSV
                     </CSVLink>
+                    <button
+                      onClick={handleDownloadPdf}
+                      className="no-print gap-1 flex items-center justify-center text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 font-medium rounded-xl text-sm px-4 py-2 dark:bg-teal-600 dark:hover:bg-teal-700 focus:outline-none dark:focus:ring-teal-800"
+                    >
+                      PDF
+                    </button>
                   </div>
                 </div>
               </div>
@@ -277,7 +325,7 @@ const ResponseChart = ({ formData, questions }) => {
                         <div className="flex justify-center mt-4">
                           <button
                             onClick={() => toggleResponses(question.id)}
-                            className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                            className="no-print text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                           >
                             {visibleResponses[question.id] ? (
                               <MdExpandLess size={24} />
