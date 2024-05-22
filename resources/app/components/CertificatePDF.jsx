@@ -7,22 +7,13 @@ import {
   Image,
   Font,
 } from "@react-pdf/renderer";
-//import cert001 from "../assets/cert001.jpg";
-
-import RobotoRegular from "../fonts/Roboto/Roboto-Regular.ttf";
-import RobotoBlack from "../fonts/Roboto/Roboto-Black.ttf";
-import RobotoBold from "../fonts/Roboto/Roboto-Bold.ttf";
+//import cert001 from "../assets/cert001.jpg";;
 import LatoRegular from "../fonts/Lato/Lato-Regular.ttf";
 import LatoBold from "../fonts/Lato/Lato-Bold.ttf";
-import LatoBlack from "../fonts/Lato/Lato-Black.ttf";
 import TinoBold from "../fonts/Tinos/Tinos-Bold.ttf"
 
-Font.register({ family: "RobotoRegular", src: RobotoRegular });
-Font.register({ family: "RobotoBold", src: RobotoBold });
-Font.register({ family: "RobotoBlack", src: RobotoBlack });
 Font.register({ family: "LatoRegular", src: LatoRegular });
 Font.register({ family: "LatoBold", src: LatoBold });
-Font.register({ family: "LatoBlack", src: LatoBlack });
 Font.register({ family: "TinoBold", src: TinoBold });
 
 
