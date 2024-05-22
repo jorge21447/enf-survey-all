@@ -49,7 +49,7 @@ const CertificatesList = () => {
       ) : (
         <>
           {data && data?.certificates?.length > 0 ? (
-            <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+            <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 md:justify-start  justify-center">
               <div className="flex flex-wrap md:justify-start  justify-center p-2 ">
                 {data.certificates.map((certificate, index) => (
                   <CertificatesCard key={index} data={certificate} />

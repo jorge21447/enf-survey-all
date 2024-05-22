@@ -155,7 +155,7 @@ const CertificatePDF = ({ users }) => {
             ) : (
               <>
                 <Text style={styles.certificateTextCenter}>
-                  A: UNIV. {user.name.toUpperCase()}
+                  A: {user.role_id == "4" ? 'UNIV.' : 'LIC.'} {user.name.toUpperCase()}
                 </Text>
                 <Text style={styles.certificateText}>
                   Por su participación en actividades de EXTENSION SOCIAL en la

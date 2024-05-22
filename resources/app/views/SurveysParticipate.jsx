@@ -50,7 +50,7 @@ const SurveysParticipate = () => {
       ) : (
         <>
           {data && data.length > 0 ? ( // Changed condition for empty data
-            <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+            <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900 justify-center md:justify-start">
               <div className="flex flex-wrap md:justify-start justify-center p-2">
                 {data.map((survey, index) => (
                   <SurveyCard key={index} data={survey} />
