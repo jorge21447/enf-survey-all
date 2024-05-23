@@ -33,6 +33,7 @@ const UserTable = ({ users, handleDelete }) => {
     return userData.map((user) => ({
       id: user.id,
       name: user.name,
+      ci: user.ci,
       email: user.email,
       is_active: user.is_active,
       role_id: user.role_id,
@@ -90,6 +91,7 @@ const UserTable = ({ users, handleDelete }) => {
                   headers={[
                     { label: "ID", key: "id" },
                     { label: "Nombre", key: "name" },
+                    { label: "CI", key: "ci"},
                     { label: "Correo electrónico", key: "email" },
                     { label: "Estado", key: "is_active" },
                     { label: "ID de rol", key: "role_id" },

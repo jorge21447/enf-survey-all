@@ -118,7 +118,7 @@ const SurveyTable = ({ surveys, handleCreateSurvey, handleDelete }) => {
                         </td>
                         <td className="px-4 py-3 text-center">
                           <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ">
-                            {elm.responses.length}
+                          {elm?.responses?.length > 0 ? elm?.responses?.length/elm?.sections[0]?.questions?.length :0}
                           </span>
                         </td>
                         <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">

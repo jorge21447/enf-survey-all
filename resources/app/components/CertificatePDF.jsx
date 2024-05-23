@@ -7,13 +7,15 @@ import {
   Image,
   Font,
 } from "@react-pdf/renderer";
-//import cert001 from "../assets/cert001.jpg";;
+import cert0001 from "../assets/cert0001.png";;
 import LatoRegular from "../fonts/Lato/Lato-Regular.ttf";
 import LatoBold from "../fonts/Lato/Lato-Bold.ttf";
+import LatoBlack from "../fonts/Lato/Lato-Black.ttf";
 import TinoBold from "../fonts/Tinos/Tinos-Bold.ttf"
 
 Font.register({ family: "LatoRegular", src: LatoRegular });
 Font.register({ family: "LatoBold", src: LatoBold });
+Font.register({ family: "LatoBlack", src: LatoBlack });
 Font.register({ family: "TinoBold", src: TinoBold });
 
 
@@ -42,18 +44,18 @@ const CertificatePDF = ({ users }) => {
     page: {
       flexDirection: "row",
       backgroundColor: "white", // Color de fondo blanco
-      padding: 70, // Margen de 40px en todos los lados
       width: "100%", // Ancho del contenido al 80%
       height: "100%", // Alto del contenido al 80%
       justifyContent: "center", // Alinear contenido verticalmente
       alignItems: "center", // Alinear contenido horizontalmente
       fontFamily: "LatoRegular",
       color: "#1f4e79",
-      hyphenation: false,
-      marginTop: 20,
     },
     section: {
       flexGrow: 1,
+      padding: 70, // Margen de 40px en todos los lados
+      marginTop: 80,
+      hyphenation: false,
     },
     title1: {
       fontSize: 18,
@@ -92,7 +94,7 @@ const CertificatePDF = ({ users }) => {
     firmas: {
       flexDirection: "row",
       justifyContent: "space-between",
-      marginTop: 40,
+      marginTop: 20,
     },
     firma: {
       textAlign: "center",
@@ -109,19 +111,30 @@ const CertificatePDF = ({ users }) => {
       fontSize: 16,
       textAlign: "right",
     },
+
+    image: {
+      width: "100%", // Ajustar al 100% del contenedor
+      height: "100%", // Ajustar al 100% del contenedor
+      position: "absolute", // Posición absoluta detrás del texto
+      zIndex: -1, // Z-index para colocar detrás del texto
+      margin: 0, // Eliminar margen
+      padding: 0, // Eliminar relleno
+    },
   });
 
   // Contenido del documento PDF
   const content = (
     <Document>
       {users.map((user) => (
+        
         <Page
           size="LETTER"
           orientation="landscape"
           style={styles.page}
           key={user.id}
         >
-          {/* <Image src={cert001} style={styles.image} /> */}
+          
+        <Image src={cert0001} style={styles.image} />
           <View style={styles.section}>
             <Text style={styles.title1}>Otorga el presente</Text>
             <Text style={styles.title2}>C E R T I F I C A D O</Text>

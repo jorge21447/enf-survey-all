@@ -37,13 +37,13 @@ const UserCertificateTable = ({ users }) => {
     return userData.map((user) => ({
       id: user.id,
       name: user.name,
+      ci: user.ci,
       email: user.email,
       is_active: user.is_active,
       role_id: user.role_id,
       role_name: user.role.name,
     }));
   };
-
 
   return (
     <>
@@ -108,6 +108,7 @@ const UserCertificateTable = ({ users }) => {
                   headers={[
                     { label: "ID", key: "id" },
                     { label: "Nombre", key: "name" },
+                    { label: "Ci", key: "ci" },
                     { label: "Correo electrónico", key: "email" },
                     { label: "Estado", key: "is_active" },
                     { label: "ID de rol", key: "role_id" },

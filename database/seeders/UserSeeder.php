@@ -30,8 +30,17 @@ class UserSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ),
             array(
-                'name' => 'Kenneth Aliaga',
-                'email' => 'fabricio@gmail.com',
+                'name' => 'Tania Pinto Ucharico',
+                'email' => 'alelumatagui@gmail.com',
+                'ci' => '4963733',
+                'password' => bcrypt('A123456!'),
+                'role_id' => $roles->where('name', 'Administrativo')->first()->id,  // Asigna el rol "Administrativo"
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ),
+            array(
+                'name' => 'Irma Pinto Morales',
+                'email' => 'irmapintomorales@hotmail.com',
                 'ci' => '1234',
                 'password' => bcrypt('A123456!'),
                 'role_id' => $roles->where('name', 'Administrativo')->first()->id,  // Asigna el rol "Administrativo"
@@ -39,16 +48,25 @@ class UserSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ),
             array(
-                'name' => 'Lucia',
+                'name' => 'Kenneth Fabricio Aliaga Ramirez',
+                'email' => 'fabricio.aliaga.ramirez@gmail.com',
+                'ci' => '13496656',
+                'password' => bcrypt('A123456!'),
+                'role_id' => $roles->where('name', 'Administrativo')->first()->id,  // Asigna el rol "Administrativo"
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ),
+            array(
+                'name' => 'Lucia Alarcon Altamirano',
                 'email' => 'lucia@gmail.com',
-                'ci' => '12345',
+                'ci' => '123456',
                 'password' => bcrypt('A123456!'),
                 'role_id' => $roles->where('name', 'Docente')->first()->id,  // Asigna el rol "Docente"
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ),
             array(
-                'name' => 'Ana García',
+                'name' => 'Ana García Limachi',
                 'email' => 'ana@gmail.com',
                 'ci' => '1234567',
                 'password' => bcrypt('A123456!'),
@@ -59,7 +77,7 @@ class UserSeeder extends Seeder
             array(
                 'name' => 'Jorge Ariel Rosa Humiri',
                 'email' => 'jorge@gmail.com',
-                'ci' => '123456',
+                'ci' => '8358429',
                 'password' => bcrypt('A123456!'),
                 'role_id' => $roles->where('name', 'Estudiante')->first()->id,  // Asigna el rol "Estudiante"
                 'created_at' => Carbon::now(),

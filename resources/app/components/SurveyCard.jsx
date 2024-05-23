@@ -71,7 +71,7 @@ const SurveyCard = ({ data }) => {
           <div className="mt-4 text-black dark:text-white">
             <p>Fecha Cierre: {finish_date ? finish_date : "No Establecido"}</p>
             <p>Número de Preguntas: {data.sections[0].questions.length}</p>
-            <p>Respuestas: {data.responses.length}</p>
+            <p>Respuestas: {data?.responses?.length > 0 ? data?.responses?.length/data?.sections[0]?.questions?.length :0}</p>
           </div>
         </div>
         <div className="p-4 flex justify-center border-t border-gray-200  dark:border-gray-600">

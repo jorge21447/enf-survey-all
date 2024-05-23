@@ -178,7 +178,7 @@ const ResponseChart = ({ formData, questions }) => {
     window.scrollTo(0, 0);
 
       const canvas = await html2canvas(divToPrint, {
-        scale: 2,
+        //scale: 1,
         backgroundColor: isDarkMode ? "#1f2937" : "#ffffff",
       });
       canvas.willReadFrequently = true;
