@@ -54,7 +54,7 @@ const CertificatePDF = ({ users }) => {
     section: {
       flexGrow: 1,
       padding: 70, // Margen de 40px en todos los lados
-      marginTop: 80,
+      marginTop: 50,
       hyphenation: false,
     },
     title1: {
@@ -70,7 +70,7 @@ const CertificatePDF = ({ users }) => {
       fontFamily: "TinoBold",
     },
     certificateText: {
-      fontSize: 24,
+      fontSize: 20,
       textAlign: "justify",
       marginTop: 20,
       hyphenation: false,

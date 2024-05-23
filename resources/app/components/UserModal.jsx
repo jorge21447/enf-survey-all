@@ -104,8 +104,8 @@ const UserModal = () => {
                     <option value={1}>Administrador</option>
                     <option value={2}>Administrativo</option>
                     <option value={3}>Docente Asistencial</option>
-                    <option value={4}>Docente</option>
-                    <option value={5}>Estudiante</option>
+                      <option value={4}>Estudiante</option>
+                      <option value={5}>Docente</option>
                   </select>
                 </div>
                 <div>
